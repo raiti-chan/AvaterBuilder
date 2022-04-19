@@ -75,4 +75,4 @@ crashlytics-build.properties
 # Paid assets
 /[Aa]ssets/*
 !/[Aa]ssets/Raitichan/
-!/[Aa]ssets/av3-animator-as-code/
+!/[Aa]ssets/AnimatorAsCodeFramework/
