@@ -1,4 +1,5 @@
 ﻿using System;
+using Raitichan.Script.Util.Editor;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -47,13 +48,13 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 			if (string.IsNullOrEmpty(editor.WorkingDirectry)) {
 				if (GUILayout.Button("作業ディレクトリの選択")) {
 					string path = EditorUtility.OpenFolderPanel("作業ディレクトリの設定", Application.dataPath, string.Empty);
-					this.serializedObject.FindProperty("_workingDirectry").stringValue = Util.GetAssetsPath(path);
+					this.serializedObject.FindProperty("_workingDirectry").stringValue = AssetPathUtil.GetAssetsPath(path);
 					this._isOpenWorkingDirectry = false;
 				}
 			} else {
 				if (GUILayout.Button("作業ディレクトリの変更")) {
 					string path = EditorUtility.OpenFolderPanel("作業ディレクトリの変更", editor.WorkingDirectry, string.Empty);
-					this.serializedObject.FindProperty("_workingDirectry").stringValue = Util.GetAssetsPath(path);
+					this.serializedObject.FindProperty("_workingDirectry").stringValue = AssetPathUtil.GetAssetsPath(path);
 					this._isOpenWorkingDirectry = false;
 				}
 			}
@@ -67,7 +68,7 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 					if (!string.IsNullOrEmpty(fileName)) {
 						VRCExpressionParameters asset = CreateInstance<VRCExpressionParameters>();
 
-						AssetDatabase.CreateAsset(asset, Util.GetAssetsPath(fileName));
+						AssetDatabase.CreateAsset(asset, AssetPathUtil.GetAssetsPath(fileName));
 						AssetDatabase.Refresh();
 						this.serializedObject.FindProperty("_parameters").objectReferenceValue = asset;
 						asset.parameters = new VRCExpressionParameters.Parameter[0];
@@ -83,7 +84,7 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 					if (!string.IsNullOrEmpty(fileName)) {
 						VRCExpressionsMenu asset = CreateInstance<VRCExpressionsMenu>();
 
-						AssetDatabase.CreateAsset(asset, Util.GetAssetsPath(fileName));
+						AssetDatabase.CreateAsset(asset, AssetPathUtil.GetAssetsPath(fileName));
 						AssetDatabase.Refresh();
 						this.serializedObject.FindProperty("_menuRoot").objectReferenceValue = asset;
 					}

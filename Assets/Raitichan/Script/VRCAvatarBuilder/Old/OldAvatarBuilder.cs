@@ -1,10 +1,11 @@
-﻿using UnityEditor;
+﻿using Assets.Raitichan.Script.BoneRemapper;
+using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 
-
+#if UNITY_EDITOR
 namespace Assets.Raitichan.Script.VRCAvatarBuilder {
-	public class AvatarBuilder : MonoBehaviour {
+	public class OldAvatarBuilder : MonoBehaviour {
 
 		/// <summary>
 		/// 初期化されているか
@@ -37,6 +38,17 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder {
 		public SceneAsset Scene {
 			get => this._scene;
 			set => this._scene = value; 
+		}
+
+		/// <summary>
+		/// ボーン名プロファイル
+		/// </summary>
+		[SerializeField]
+		private BoneNameProfile _boneNameProfile;
+		public string BoneNameProfilePropertyName => nameof(this._boneNameProfile);
+		public BoneNameProfile BoneNameProfile {
+			get => this._boneNameProfile;
+			set => this._boneNameProfile = value;
 		}
 
 		/// <summary>
@@ -116,3 +128,5 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder {
 		}
 	}
 }
+
+#endif

@@ -1,8 +1,8 @@
-﻿using Assets.Raitichan.Script.Util.Extention;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Raitichan.Script.Util.Editor.Extension;
 using UnityEditor;
 using UnityEngine;
 
@@ -126,7 +126,7 @@ namespace Assets.Raitichan.Script.BoneRemapper.Editor {
 			EditorGUILayout.ObjectField(bone, typeof(Transform), true);
 
 			using (new EditorGUI.IndentLevelScope(1)) {
-				foreach (Transform child in bone.Childs()) {
+				foreach (Transform child in bone) {
 					if (this.CheckBone(child)) {
 						this.DrawBoneTreeItem(child);
 					}
@@ -154,7 +154,7 @@ namespace Assets.Raitichan.Script.BoneRemapper.Editor {
 			this._boneMap.TryGetValue(bone, out Transform target);
 			this._boneMap[bone] = EditorGUILayout.ObjectField(target, typeof(Transform), true) as Transform;
 
-			foreach (Transform child in bone.Childs()) {
+			foreach (Transform child in bone) {
 				if (this.CheckBone(child)) {
 					this.DrawBoneDrawerItem(child);
 				}
@@ -198,7 +198,7 @@ namespace Assets.Raitichan.Script.BoneRemapper.Editor {
 
 			}
 
-			foreach (Transform child in bone.Childs()) {
+			foreach (Transform child in bone) {
 				if (this.CheckBone(child)) {
 					this.DrawOtherItem(child);
 				}
@@ -214,7 +214,7 @@ namespace Assets.Raitichan.Script.BoneRemapper.Editor {
 			if (item == null) {
 				return;
 			}
-			foreach (Transform child in src.Childs()) {
+			foreach (Transform child in src) {
 				BoneTreeItem childItem;
 				if (this._fixRegex == null) {
 					childItem = item.Find(child.name);
@@ -312,7 +312,7 @@ namespace Assets.Raitichan.Script.BoneRemapper.Editor {
 
 			// このボーンの子ボーンがどれかしらのメッシュのボーンリストに乗っているか。
 			if (!isInBoneList) {
-				foreach (Transform child in targetBone.Childs()) {
+				foreach (Transform child in targetBone) {
 					if (this.CheckBone(child)) {
 						return true;
 					}

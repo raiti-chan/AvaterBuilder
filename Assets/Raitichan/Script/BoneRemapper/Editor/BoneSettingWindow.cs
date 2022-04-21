@@ -23,6 +23,7 @@ namespace Assets.Raitichan.Script.BoneRemapper.Editor {
 
 		private void OnGUI() {
 			this._target.BaseName = EditorGUILayout.TextField("基本名", this._target.BaseName);
+			EditorGUILayout.IntField("ヒューマノイドボーンインデックス", this._target.HumanBoneIndex);
 			this._subNames = this._target.SubNames.ToArray();
 
 			SerializedObject serializedObject = new SerializedObject(this);

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
-namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
-	public static class Util {
+namespace Raitichan.Script.Util.Editor {
+	public static class AssetPathUtil {
 
 		public static string GetAssetsPath(string fullPath) {
 			int startIndex = fullPath.IndexOf("Assets/", StringComparison.Ordinal);
@@ -15,6 +12,10 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 			string assetPath = fullPath.Substring(startIndex);
 
 			return assetPath;
+		}
+
+		public static string GetFullPath(string assetPath) {
+			return Path.GetFullPath(assetPath);
 		}
 	}
 }

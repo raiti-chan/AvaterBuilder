@@ -29,10 +29,7 @@ namespace Assets.Raitichan.Script.BoneRemapper.Editor {
 
 				using (new EditorGUI.DisabledGroupScope(this._armature == null || this._avatar == null)) {
 					if (GUILayout.Button("インポート")) {
-						BoneTreeItem boneTree = new BoneTreeItem();
-						this.ImportBone(this._armature, boneTree);
-						boneTree.CleanAll();
-						this._target.BoneTree = boneTree;
+						this._target.ImportArmature(this._armature, this._avatar, this._target.IsOnlyHumanBone);
 						this.FlashBoneTree();
 					}
 				}
@@ -114,39 +111,6 @@ namespace Assets.Raitichan.Script.BoneRemapper.Editor {
 			}
 			EditorGUI.indentLevel--;
 			return true;
-		}
-
-		private void ImportBone(Transform bone, BoneTreeItem tree) {
-			SerializedProperty isOnlyHumanBone = this.serializedObject.FindProperty(BoneNameProfile.IsOnlyHumanBonePropertyName);
-			if (this._avatar is null) {
-				tree.BaseName = bone.name;
-			} else {
-				tree.BaseName = this._avatar.humanDescription.human
-					.Where(element => element.boneName == bone.name)
-					.Select(element => element.humanName)
-					.FirstOrDefault();
-				if (tree.BaseName is null) {
-					if (bone.name == "Armature") {
-						tree.BaseName = bone.name;
-					} else {
-						tree.BaseName = isOnlyHumanBone.boolValue ? "" : bone.name;
-					}
-				}
-
-				if (tree.BaseName != bone.name) {
-					tree.SubNames.Add(bone.name);
-				}
-			}
-			string lowerName = bone.name.ToLower();
-			if (lowerName != bone.name) {
-				tree.SubNames.Add(lowerName);
-			}
-			tree.Childs = new List<BoneTreeItem>(bone.childCount);
-
-			for (int i = 0; i < bone.childCount; i++) {
-				tree.Childs.Add(new BoneTreeItem());
-				this.ImportBone(bone.GetChild(i), tree.Childs[i]);
-			}
 		}
 
 		private void FlashBoneTree() {

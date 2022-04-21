@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Raitichan.Script.Util.Editor;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.ScriptableObjects;
@@ -146,7 +147,7 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 								if (!string.IsNullOrEmpty(fileName)) {
 									VRCExpressionsMenu asset = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
 
-									AssetDatabase.CreateAsset(asset, Util.GetAssetsPath(fileName));
+									AssetDatabase.CreateAsset(asset, AssetPathUtil.GetAssetsPath(fileName));
 									AssetDatabase.Refresh();
 									subMenu.objectReferenceValue = asset;
 								}

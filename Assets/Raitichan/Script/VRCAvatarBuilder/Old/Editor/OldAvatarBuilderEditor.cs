@@ -1,4 +1,6 @@
-﻿using Assets.Raitichan.Script.Util.Extention;
+﻿using Assets.Raitichan.Script.BoneRemapper;
+using System.IO;
+using Raitichan.Script.Util.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -7,16 +9,16 @@ using VRC.SDK3.Avatars.Components;
 
 namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 
-	[CustomEditor(typeof(AvatarBuilder))]
-	public class AvatarBuilderEditor : UnityEditor.Editor {
+	[CustomEditor(typeof(OldAvatarBuilder))]
+	public class OldAvatarBuilderEditor : UnityEditor.Editor {
 
-		private AvatarBuilder _target;
+		private OldAvatarBuilder _target;
 
 		private bool _initAdvancedMode = false;
 		private bool _advancedSetting = false;
 
 		public void OnEnable() {
-			this._target = this.target as AvatarBuilder;
+			this._target = this.target as OldAvatarBuilder;
 		}
 
 		public override void OnInspectorGUI() {
@@ -38,8 +40,11 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 			if (this._initAdvancedMode) {
 				EditorGUI.indentLevel++;
 
-				EditorGUILayout.PropertyField(this.serializedObject.FindProperty(this._target.ScenePropertyName),
-					new GUIContent("Upload Scene"));
+				// Scene
+				EditorGUILayout.PropertyField(this.serializedObject.FindProperty(this._target.ScenePropertyName), new GUIContent("Upload Scene"));
+
+				// BoneNameProfile
+				EditorGUILayout.PropertyField(this.serializedObject.FindProperty(this._target.BoneNameProfilePropertyName));
 
 				EditorGUI.indentLevel--;
 			}
@@ -48,12 +53,32 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 				// 初期設定ボタン
 				if (GUILayout.Button("Initialize Avatar Builder")) {
 					// 作業ディレクトリの設定
-					string path = Util.GetAssetsPath(EditorUtility.OpenFolderPanel("Setting WorkingDirectry", Application.dataPath, string.Empty));
-					
+					string fullPath = EditorUtility.OpenFolderPanel("Setting WorkingDirectry", Application.dataPath, string.Empty);
+					string path = AssetPathUtil.GetAssetsPath(fullPath);
+					if (string.IsNullOrEmpty(path)) {
+						return;
+					}
 					if (this._target.Scene == null) {
 						// アップロード用シーンの生成
-						string uploadScenePath = $"{path}/{this._target.gameObject.scene.name}_{this._target.name}_Upload.unity";
-						Scene uploadScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+						string uploadSceneFullPath = $"{fullPath}/{this._target.gameObject.scene.name}_{this._target.name}_Upload.unity";
+						string uploadScenePath = AssetPathUtil.GetAssetsPath(uploadSceneFullPath);
+						// シーンファイルの存在チェック
+						Scene uploadScene = SceneManager.GetSceneByPath(uploadScenePath);
+						if (uploadScene.name == null) {
+							if (Directory.Exists(uploadSceneFullPath)) {
+								// 存在すればそれを開く
+								uploadScene = EditorSceneManager.OpenScene(uploadScenePath, OpenSceneMode.Additive);
+							} else {
+								uploadScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+							}
+						}
+
+						if (!uploadScene.isLoaded) {
+							EditorSceneManager.CloseScene(uploadScene, true);
+							uploadScene = EditorSceneManager.OpenScene(uploadScenePath, OpenSceneMode.Additive);
+						}
+						EditorSceneManager.MoveSceneBefore(uploadScene, this._target.gameObject.scene);
+
 
 						if (EditorSceneManager.SaveScene(uploadScene, uploadScenePath)) {
 							AssetDatabase.Refresh();
@@ -68,13 +93,13 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 					}
 
 					this.serializedObject.FindProperty(this._target.WorkingDirectryPropertyName).stringValue = path;
-					this.serializedObject.FindProperty(this._target.IsInitializedPropertyName).boolValue = true;
 
 					// Armatureの取得
 					Animator avatarAnimator = this._target.Avatar.GetComponent<Animator>();
 					GameObject armatureObject = avatarAnimator.GetBoneTransform(HumanBodyBones.Hips).parent.gameObject;
 					this.serializedObject.FindProperty(this._target.ArmaturePropertyName).objectReferenceValue = armatureObject;
-
+					this.serializedObject.ApplyModifiedProperties();
+					this.serializedObject.Update();
 					// Armature内のボーンの順序を適切に
 					for (int i = (int)HumanBodyBones.UpperChest; i >= 0; i--) {
 						Transform bone = avatarAnimator.GetBoneTransform((HumanBodyBones)i);
@@ -83,11 +108,24 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 					}
 					avatarAnimator.GetBoneTransform(HumanBodyBones.Spine).SetAsFirstSibling();
 
+					if (this._target.BoneNameProfile == null) {
+
+						string profilePath = $"{path}/{this._target.Avatar.name}_BoneNameProfile.asset";
+						BoneNameProfile profile = AssetDatabase.LoadAssetAtPath<BoneNameProfile>(profilePath);
+						if (profile == null) {
+							profile = CreateInstance<BoneNameProfile>();
+							profile.ImportArmature(this._target.Armature.transform, this._target.Avatar.GetComponent<Animator>().avatar);
+							AssetDatabase.CreateAsset(profile, profilePath);
+							AssetDatabase.Refresh();
+						}
+						this.serializedObject.FindProperty(this._target.BoneNameProfilePropertyName).objectReferenceValue = profile;
+					}
+
 
 					// 必要なオブジェクトの存在チェック
 					bool hasHairs = false, hasWears = false, hasAccessorys = false, hasObjects = false;
 
-					foreach (Transform childObject in this._target.transform.Childs()) {
+					foreach (Transform childObject in this._target.transform) {
 						switch (childObject.gameObject.name) {
 							case "Hairs":
 								hasHairs = true;
@@ -137,6 +175,7 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 						this.serializedObject.FindProperty(this._target.ObjectsObjectPropertyName).objectReferenceValue = objects;
 					}
 
+					this.serializedObject.FindProperty(this._target.IsInitializedPropertyName).boolValue = true;
 				}
 			}
 
@@ -153,6 +192,10 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 				scaleProperty.floatValue = oldScaleValue;
 			}
 
+			if (GUILayout.Button("Import Wear")) {
+				WearImportWindow.ShowWindow(this._target);
+			}
+
 			// 詳細プロパティ
 			this._advancedSetting = EditorGUILayout.Foldout(this._advancedSetting, "Advanced Settings");
 			if (this._advancedSetting) {
@@ -163,12 +206,15 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 				EditorGUILayout.PropertyField(this.serializedObject.FindProperty(this._target.WorkingDirectryPropertyName));
 				GUI.enabled = true;
 				if (GUILayout.Button("Change WorkingDirectry")) {
-					string path = Util.GetAssetsPath(EditorUtility.OpenFolderPanel("Setting WorkingDirectry", Application.dataPath, string.Empty));
+					string path = AssetPathUtil.GetAssetsPath(EditorUtility.OpenFolderPanel("Setting WorkingDirectry", Application.dataPath, string.Empty));
 					this.serializedObject.FindProperty(this._target.WorkingDirectryPropertyName).stringValue = path;
 				}
 
 				// Scene
 				EditorGUILayout.PropertyField(this.serializedObject.FindProperty(this._target.ScenePropertyName), new GUIContent("Upload Scene"));
+
+				// BoneNameProfile
+				EditorGUILayout.PropertyField(this.serializedObject.FindProperty(this._target.BoneNameProfilePropertyName));
 
 
 				// AvatarDescripter
@@ -199,8 +245,9 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 			Scene targetScene = SceneManager.GetSceneByPath(scenePath);
 			if (targetScene.path != scenePath || !targetScene.isLoaded) {
 				// 生成先シーンが開かれてないかロードされていない場合開く
-				EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+				targetScene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
 			}
+			EditorSceneManager.MoveSceneBefore(targetScene, this._target.gameObject.scene);
 
 			GameObject avatarObject = Instantiate(this._target.Avatar.gameObject);
 			VRCAvatarDescriptor avatarDescriptor = avatarObject.GetComponent<VRCAvatarDescriptor>();
@@ -224,7 +271,6 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 		/// <returns></returns>
 		private bool CanInit() {
 			if (this._target.Avatar == null) return false;
-
 			return true;
 		}
 
@@ -233,8 +279,15 @@ namespace Assets.Raitichan.Script.VRCAvatarBuilder.Editor {
 		/// </summary>
 		/// <returns>実行可能な場合true</returns>
 		private bool CanBuild() {
+			if (string.IsNullOrEmpty(this._target.WorkingDirectry)) return false;
 			if (this._target.Scene == null) return false;
+			if (this._target.BoneNameProfile == null) return false;
 			if (this._target.Avatar == null) return false;
+			if (this._target.HairsObject == null) return false;
+			if (this._target.WearsObject == null) return false;
+			if (this._target.AccessorysObject == null) return false;
+			if (this._target.ObjectsObject == null) return false;
+			if (this._target.Armature == null) return false;
 
 			return true;
 		}
