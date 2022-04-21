@@ -48,7 +48,12 @@ namespace Raitichan.Script.Util.Editor {
 		/// <summary>
 		/// サブステートマシン内の物を含む全てのクローンされたビヘイビア
 		/// </summary>
-		private readonly List<StateMachineBehaviour> _clonedBehaviour;
+		private readonly List<StateMachineBehaviour> _clonedBehaviours;
+
+		/// <summary>
+		/// サブステートマシン内の物を含む全てのクローンされたブレンドツリーのリスト
+		/// </summary>
+		private readonly List<BlendTree> _clonedBlendTrees;
 
 		#endregion
 
@@ -85,7 +90,8 @@ namespace Raitichan.Script.Util.Editor {
 			this._clonedStateMachines = new Dictionary<int, ClonedStateMachineInfo>();
 			this._clonedStates = new Dictionary<int, AnimatorState>();
 			this._clonedTransitions = new List<ClonedTransitionInfo>();
-			this._clonedBehaviour = new List<StateMachineBehaviour>();
+			this._clonedBehaviours = new List<StateMachineBehaviour>();
+			this._clonedBlendTrees = new List<BlendTree>();
 		}
 
 		/// <summary>
@@ -159,8 +165,12 @@ namespace Raitichan.Script.Util.Editor {
 				AssetDatabase.AddObjectToAsset(animatorStateTransition.Transition, path);
 			}
 
-			foreach (StateMachineBehaviour behaviour in this._clonedBehaviour) {
+			foreach (StateMachineBehaviour behaviour in this._clonedBehaviours) {
 				AssetDatabase.AddObjectToAsset(behaviour, path);
+			}
+
+			foreach (BlendTree blendTree in this._clonedBlendTrees) {
+				AssetDatabase.AddObjectToAsset(blendTree, path);
 			}
 
 			return true;
@@ -251,6 +261,13 @@ namespace Raitichan.Script.Util.Editor {
 		private AnimatorState CloneState(AnimatorState src) {
 			AnimatorStateTransition[] transitions = this.CloneStateTransitions(src.transitions);
 			StateMachineBehaviour[] behaviours = this.CloneBehaviours(src.behaviours);
+			Motion motion;
+			if (src.motion is BlendTree tree) {
+				// BlendTreeの場合BlendTreeも複製します。
+				motion = this.CloneBlendTree(tree);
+			} else {
+				motion = src.motion;
+			}
 
 			AnimatorState dst = new AnimatorState {
 #if !NO_HIDE_IN_HIERARCHY
@@ -268,7 +285,7 @@ namespace Raitichan.Script.Util.Editor {
 				mirrorParameterActive = src.mirrorParameterActive,
 				cycleOffsetParameterActive = src.cycleOffsetParameterActive,
 				timeParameterActive = src.timeParameterActive,
-				motion = src.motion,
+				motion = motion,
 				tag = src.tag,
 				speedParameter = src.speedParameter,
 				mirrorParameter = src.mirrorParameter,
@@ -279,6 +296,52 @@ namespace Raitichan.Script.Util.Editor {
 			return dst;
 		}
 
+		/// <summary>
+		/// <see cref="BlendTree"/>を複製し、複製したリストに登録します。
+		/// </summary>
+		/// <param name="src">ソース</param>
+		/// <returns>複製されたBlendTree</returns>
+		private BlendTree CloneBlendTree(BlendTree src) {
+			ChildMotion[] childMotions = this.CloneChildMotion(src.children);
+			BlendTree cloned = new BlendTree {
+#if !NO_HIDE_IN_HIERARCHY
+				hideFlags = HideFlags.HideInHierarchy,
+#endif
+				name = src.name,
+				children = childMotions,
+				blendParameter = src.blendParameter,
+				blendParameterY = src.blendParameterY,
+				minThreshold = src.minThreshold,
+				maxThreshold = src.maxThreshold,
+				useAutomaticThresholds = src.useAutomaticThresholds
+			};
+			this.RegisterClonedBlendTree(cloned);
+			return cloned;
+		}
+
+		/// <summary>
+		/// <see cref="ChildMotion"/>を複製します。サブBlendTreeも複製されます。
+		/// </summary>
+		/// <param name="src">ソース</param>
+		/// <returns>複製<see cref="ChildMotion"/>配列</returns>
+		// ReSharper disable once SuggestBaseTypeForParameter
+		private ChildMotion[] CloneChildMotion(ChildMotion[] src) {
+			if (src.Length <= 0) return null;
+			ChildMotion[] childMotions = new ChildMotion[src.Length];
+			for (int i = 0; i < childMotions.Length; i++) {
+				Motion motion;
+				if (src[i].motion is BlendTree tree) {
+					motion = this.CloneBlendTree(tree);
+				} else {
+					motion = src[i].motion;
+				}
+
+				childMotions[i] = src[i];
+				childMotions[i].motion = motion;
+			}
+
+			return childMotions;
+		}
 
 		#region Behaviours
 
@@ -482,8 +545,22 @@ namespace Raitichan.Script.Util.Editor {
 				return;
 			}
 
-			this._clonedBehaviour.Add(behaviour);
+			this._clonedBehaviours.Add(behaviour);
 			Undo.RegisterCreatedObjectUndo(behaviour, "Clone Behaviour");
+		}
+
+		/// <summary>
+		/// クローンしたブレンドツリーを登録します。
+		/// </summary>
+		/// <param name="tree">複製した<see cref="BlendTree"/></param>
+		private void RegisterClonedBlendTree(BlendTree tree) {
+			if (!this.IsRootStateMachine) {
+				this._parent.RegisterClonedBlendTree(tree);
+				return;
+			}
+
+			this._clonedBlendTrees.Add(tree);
+			Undo.RegisterCreatedObjectUndo(tree, "Clone Tree");
 		}
 
 		#endregion
