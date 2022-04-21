@@ -55,6 +55,11 @@ namespace Raitichan.Script.Util.Editor {
 		/// </summary>
 		private readonly List<BlendTree> _clonedBlendTrees;
 
+		/// <summary>
+		/// 使われているパラメータ名のリスト。
+		/// </summary>
+		private readonly HashSet<string> _usedParameterNames;
+		
 		#endregion
 
 		#region Private Property
@@ -92,6 +97,7 @@ namespace Raitichan.Script.Util.Editor {
 			this._clonedTransitions = new List<ClonedTransitionInfo>();
 			this._clonedBehaviours = new List<StateMachineBehaviour>();
 			this._clonedBlendTrees = new List<BlendTree>();
+			this._usedParameterNames = new HashSet<string>();
 		}
 
 		/// <summary>
@@ -176,6 +182,14 @@ namespace Raitichan.Script.Util.Editor {
 			return true;
 		}
 
+		/// <summary>
+		/// 複製したステートマシン内で指定した名前のプロパティが使われているかを返します。
+		/// </summary>
+		/// <param name="propertyName">プロパティ名</param>
+		/// <returns>使われている場合true</returns>
+		public bool IsUsedPropertyName(string propertyName) {
+			return this._usedParameterNames.Contains(propertyName);
+		}
 		#endregion
 
 		#region Private Method
@@ -316,6 +330,8 @@ namespace Raitichan.Script.Util.Editor {
 				useAutomaticThresholds = src.useAutomaticThresholds
 			};
 			this.RegisterClonedBlendTree(cloned);
+			this.RegisterUsedParameterName(cloned.blendParameter);
+			this.RegisterUsedParameterName(cloned.blendParameterY);
 			return cloned;
 		}
 
@@ -480,8 +496,9 @@ namespace Raitichan.Script.Util.Editor {
 			AnimatorCondition[] cloned = new AnimatorCondition[src.Length];
 			for (int i = 0; i < cloned.Length; i++) {
 				cloned[i] = src[i];
+				this.RegisterUsedParameterName(cloned[i].parameter);
 			}
-
+			
 			return cloned;
 		}
 
@@ -563,6 +580,18 @@ namespace Raitichan.Script.Util.Editor {
 			Undo.RegisterCreatedObjectUndo(tree, "Clone Tree");
 		}
 
+		/// <summary>
+		/// 使われているパラメータ名を登録します。
+		/// </summary>
+		/// <param name="parameterName">パラメータ名</param>
+		private void RegisterUsedParameterName(string parameterName) {
+			if (!this.IsRootStateMachine) {
+				this._parent.RegisterUsedParameterName(parameterName);
+				return;
+			}
+			this._usedParameterNames.Add(parameterName);
+		}
+		
 		#endregion
 
 		#endregion
