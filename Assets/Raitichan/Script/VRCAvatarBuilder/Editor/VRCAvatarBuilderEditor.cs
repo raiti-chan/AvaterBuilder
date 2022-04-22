@@ -11,6 +11,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRC.SDK3.Avatars.Components;
+using VRC.SDK3.Avatars.ScriptableObjects;
 using VRC.SDKBase;
 
 namespace Raitichan.Script.VRCAvatarBuilder.Editor {
@@ -40,6 +41,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		private SerializedProperty _rightGestureAnimationsProperty;
 		private SerializedProperty _leftExpressionAnimationsProperty;
 		private SerializedProperty _rightExpressionAnimationsProperty;
+		private SerializedProperty _vrcExpressionsProperty;
 
 		private void OnEnable() {
 			this._target = this.target as VRCAvatarBuilder;
@@ -68,6 +70,8 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 				this.serializedObject.FindProperty(VRCAvatarBuilder.LeftExpressionAnimationsPropertyName);
 			this._rightExpressionAnimationsProperty =
 				this.serializedObject.FindProperty(VRCAvatarBuilder.RightExpressionAnimationsPropertyName);
+			this._vrcExpressionsProperty =
+				this.serializedObject.FindProperty(VRCAvatarBuilder.ExpressionsMenuPropertyName);
 		}
 
 		public override void OnInspectorGUI() {
@@ -90,6 +94,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			EditorGUILayout.PropertyField(this._rightGestureAnimationsProperty);
 			EditorGUILayout.PropertyField(this._leftExpressionAnimationsProperty);
 			EditorGUILayout.PropertyField(this._rightExpressionAnimationsProperty);
+			EditorGUILayout.PropertyField(this._vrcExpressionsProperty);
 			using (new EditorGUI.DisabledScope(!this.CanBuild())) {
 				if (GUILayout.Button(Strings.Build)) {
 					this.Build();
@@ -126,7 +131,11 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			this.ApplyAvatarScale(avatar);
 			string outPutPath = this.CheckOutputDirectory(this._target.gameObject.name, avatar);
 			this.BuildBaseLayer(avatar, outPutPath);
-
+			this.BuildAdditiveLayer(avatar, outPutPath);
+			this.BuildGestureLayer(avatar, outPutPath);
+			this.BuildActionLayer(avatar, outPutPath);
+			this.BuildFxLayer(avatar, outPutPath);
+			CopyExpressionMenu(avatar, outPutPath);
 
 			Undo.RegisterCreatedObjectUndo(avatar.gameObject, "Avatar Build");
 		}
@@ -224,12 +233,13 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			                   + "/" + AssetPathUtil.ReplaceInvalidFileNameChars(avatarName, '_')
 			                   + "/" + AssetPathUtil.ReplaceInvalidFileNameChars(avatar.gameObject.name, '_')
 			                   + VRCAvatarBuilder.GENERATED_SUFFIX;
-			
+
 			string fullPath = AssetPathUtil.GetFullPath(assetPath);
 			if (Directory.Exists(fullPath)) {
 				assetPath = AssetDatabase.GenerateUniqueAssetPath(assetPath);
 				fullPath = AssetPathUtil.GetFullPath(assetPath);
 			}
+
 			Directory.CreateDirectory(fullPath);
 			AssetDatabase.Refresh();
 
@@ -242,7 +252,114 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			string dstAssetPath = outPutPath + "/BaseLayer.controller";
 			AssetDatabase.CopyAsset(emptyControllerPath, dstAssetPath);
 			AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(dstAssetPath);
-			
+			foreach (RuntimeAnimatorController raController in this._target.BaseLayers) {
+				if (raController is AnimatorController aController) {
+					controller.AppendLayerAll(aController);
+				} else {
+					throw new NotSupportedException($"Builder is NotSupport ControllerType {raController.GetType()}");
+				}
+			}
+
+			avatar.SetLayer(VRCAvatarDescriptor.AnimLayerType.Base, controller);
 		}
+		
+		private void BuildAdditiveLayer(VRCAvatarDescriptor avatar, string outPutPath) {
+			string emptyControllerPath = AssetDatabase.GetAssetPath(this._target.EmptyAnimatorController);
+			string dstAssetPath = outPutPath + "/AdditiveLayer.controller";
+			AssetDatabase.CopyAsset(emptyControllerPath, dstAssetPath);
+			AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(dstAssetPath);
+			foreach (RuntimeAnimatorController raController in this._target.AdditiveLayers) {
+				if (raController is AnimatorController aController) {
+					controller.AppendLayerAll(aController);
+				} else {
+					throw new NotSupportedException($"Builder is NotSupport ControllerType {raController.GetType()}");
+				}
+			}
+
+			avatar.SetLayer(VRCAvatarDescriptor.AnimLayerType.Additive, controller);
+		}
+		
+		private void BuildGestureLayer(VRCAvatarDescriptor avatar, string outPutPath) {
+			string emptyControllerPath = AssetDatabase.GetAssetPath(this._target.EmptyAnimatorController);
+			string dstAssetPath = outPutPath + "/GestureLayer.controller";
+			AssetDatabase.CopyAsset(emptyControllerPath, dstAssetPath);
+			AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(dstAssetPath);
+			foreach (RuntimeAnimatorController raController in this._target.GestureLayers) {
+				if (raController is AnimatorController aController) {
+					controller.AppendLayerAll(aController);
+				} else {
+					throw new NotSupportedException($"Builder is NotSupport ControllerType {raController.GetType()}");
+				}
+			}
+			
+			foreach (AnimatorState state in controller.layers[1].stateMachine.states.Select(state => state.state)) {
+				if (Enum.TryParse(state.name, out GestureTypes gestureTypes)) {
+					state.motion = this._target.LeftGestureAnimations[(int)gestureTypes];
+				}
+			}
+			
+			foreach (AnimatorState state in controller.layers[2].stateMachine.states.Select(state => state.state)) {
+				if (Enum.TryParse(state.name, out GestureTypes gestureTypes)) {
+					state.motion = this._target.RightGestureAnimations[(int)gestureTypes];
+				}
+			}
+
+
+			avatar.SetLayer(VRCAvatarDescriptor.AnimLayerType.Gesture, controller);
+		}
+		
+		
+		private void BuildActionLayer(VRCAvatarDescriptor avatar, string outPutPath) {
+			string emptyControllerPath = AssetDatabase.GetAssetPath(this._target.EmptyAnimatorController);
+			string dstAssetPath = outPutPath + "/ActionLayer.controller";
+			AssetDatabase.CopyAsset(emptyControllerPath, dstAssetPath);
+			AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(dstAssetPath);
+			foreach (RuntimeAnimatorController raController in this._target.ActionLayers) {
+				if (raController is AnimatorController aController) {
+					controller.AppendLayerAll(aController);
+				} else {
+					throw new NotSupportedException($"Builder is NotSupport ControllerType {raController.GetType()}");
+				}
+			}
+
+			avatar.SetLayer(VRCAvatarDescriptor.AnimLayerType.Action, controller);
+		}
+		private void BuildFxLayer(VRCAvatarDescriptor avatar, string outPutPath) {
+			string emptyControllerPath = AssetDatabase.GetAssetPath(this._target.EmptyAnimatorController);
+			string dstAssetPath = outPutPath + "/FxLayer.controller";
+			AssetDatabase.CopyAsset(emptyControllerPath, dstAssetPath);
+			AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(dstAssetPath);
+			foreach (RuntimeAnimatorController raController in this._target.FxLayers) {
+				if (raController is AnimatorController aController) {
+					controller.AppendLayerAll(aController);
+				} else {
+					throw new NotSupportedException($"Builder is NotSupport ControllerType {raController.GetType()}");
+				}
+			}
+			
+			foreach (AnimatorState state in controller.layers[1].stateMachine.states.Select(state => state.state)) {
+				if (Enum.TryParse(state.name, out GestureTypes gestureTypes)) {
+					state.motion = this._target.LeftExpressionAnimations[(int)gestureTypes];
+				}
+			}
+			
+			foreach (AnimatorState state in controller.layers[2].stateMachine.states.Select(state => state.state)) {
+				if (Enum.TryParse(state.name, out GestureTypes gestureTypes)) {
+					state.motion = this._target.RightExpressionAnimations[(int)gestureTypes];
+				}
+			}
+
+			avatar.SetLayer(VRCAvatarDescriptor.AnimLayerType.FX, controller);
+		}
+
+		private void CopyExpressionMenu(VRCAvatarDescriptor avatar, string outPutPath) {
+			if (this._target.ExpressionsMenu == null) return;
+			string dstAssetPath = outPutPath + "/ExpressionMenu.asset";
+			VRCExpressionsMenu clonedMenu =  this._target.ExpressionsMenu.DeepClone();
+			AssetDatabase.CreateAsset(clonedMenu, dstAssetPath);
+			clonedMenu.SaveSubMenu();
+			avatar.expressionsMenu = clonedMenu;
+		}
+		
 	}
 }

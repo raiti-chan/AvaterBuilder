@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using VRC.SDK3.Avatars.ScriptableObjects;
 using StateMachineCloner = Raitichan.Script.Util.Editor.StateMachineCloner;
 
 namespace Raitichan.Script.Test.Editor {
@@ -13,22 +14,21 @@ namespace Raitichan.Script.Test.Editor {
 			window.Show();
 		}
 
-		private AnimatorController _baseController;
-		private AnimatorController _addController;
+		private VRCExpressionsMenu _target;
 
 		public void OnGUI() {
-			this._baseController =
-				EditorGUILayout.ObjectField("base", this._baseController, typeof(AnimatorController), false) as
-					AnimatorController;
-			this._addController =
-				EditorGUILayout.ObjectField("add", this._addController, typeof(AnimatorController), false) as
-					AnimatorController;
+			this._target =
+				EditorGUILayout.ObjectField("target", this._target, typeof(VRCExpressionsMenu), false) as
+					VRCExpressionsMenu;
+
 			if (!GUILayout.Button("Execute")) return;
 
-			if (this._addController == null) return;
-			if (this._baseController == null) return;
-			
-			this._baseController.AppendLayerAll(this._addController);
+			if (this._target == null) return;
+			VRCExpressionsMenu menu = this._target.DeepClone();
+			string path = AssetDatabase.GetAssetPath(this._target);
+			string savePath = path + "_copy.asset";
+			AssetDatabase.CreateAsset(menu, savePath);
+			menu.SaveSubMenu();
 		}
 	}
 }

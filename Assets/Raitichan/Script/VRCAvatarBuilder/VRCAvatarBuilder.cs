@@ -3,6 +3,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Serialization;
 using VRC.SDK3.Avatars.Components;
+using VRC.SDK3.Avatars.ScriptableObjects;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -221,9 +222,9 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		#region LeftGestureAnimations Parameter
 
-		[SerializeField] private AnimationClip[] _leftGestureAnimations = new AnimationClip[7];
+		[SerializeField] private Motion[] _leftGestureAnimations = new Motion[7];
 
-		public AnimationClip[] LeftGestureAnimations {
+		public Motion[] LeftGestureAnimations {
 			get => this._leftGestureAnimations;
 			set {
 				if (this._leftGestureAnimations == value) return;
@@ -240,9 +241,9 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		#region RightGestureAnimations Parameter
 
-		[SerializeField] private AnimationClip[] _rightGestureAnimations = new AnimationClip[7];
+		[SerializeField] private Motion[] _rightGestureAnimations = new Motion[7];
 
-		public AnimationClip[] RightGestureAnimations {
+		public Motion[] RightGestureAnimations {
 			get => this._rightGestureAnimations;
 			set {
 				if (this._rightGestureAnimations == value) return;
@@ -259,9 +260,9 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		
 		#region LeftExpressionAnimations Parameter
 
-		[SerializeField] private AnimationClip[] _leftExpressionAnimations = new AnimationClip[7];
+		[SerializeField] private Motion[] _leftExpressionAnimations = new Motion[7];
 
-		public AnimationClip[] LeftExpressionAnimations {
+		public Motion[] LeftExpressionAnimations {
 			get => this._leftExpressionAnimations;
 			set {
 				if (this._leftExpressionAnimations == value) return;
@@ -278,9 +279,9 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		#region RightExpressionAnimations Parameter
 
-		[SerializeField] private AnimationClip[] _rightExpressionAnimations = new AnimationClip[7];
+		[SerializeField] private Motion[] _rightExpressionAnimations = new Motion[7];
 
-		public AnimationClip[] RightExpressionAnimations {
+		public Motion[] RightExpressionAnimations {
 			get => this._rightExpressionAnimations;
 			set {
 				if (this._rightExpressionAnimations == value) return;
@@ -291,6 +292,25 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		}
 
 		public static string RightExpressionAnimationsPropertyName => nameof(_rightExpressionAnimations);
+
+
+		#endregion
+
+		#region ExpressionsMenu Parameter
+
+		[SerializeField] private VRCExpressionsMenu _expressionsMenu;
+
+		public VRCExpressionsMenu ExpressionsMenu {
+			get => this._expressionsMenu;
+			set {
+				if (this._expressionsMenu == value) return;
+				this.BeginUpdate();
+				this._expressionsMenu = value;
+				this.Update();
+			}
+		}
+
+		public static string ExpressionsMenuPropertyName => nameof(_expressionsMenu);
 
 
 		#endregion
