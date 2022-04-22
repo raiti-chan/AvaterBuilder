@@ -28,7 +28,7 @@ namespace Raitichan.Script.Test.Editor {
 			if (this._addController == null) return;
 			if (this._baseController == null) return;
 			
-			this._baseController.AppendLayer(this._addController, 0);
+			this._baseController.AppendLayerAll(this._addController);
 		}
 	}
 }

@@ -1,13 +1,15 @@
-﻿using System;
+﻿// #define NO_HIDE_IN_HIERARCHY // これをつけるとhierarchyに表示されるようになる。
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Raitichan.Script.Util.Editor {
-// #define NO_HIDE_IN_HIERARCHY
 	/// <summary>
 	/// ステートマシンを複製するためのクラス。
 	/// Create by Raitichan
@@ -59,7 +61,7 @@ namespace Raitichan.Script.Util.Editor {
 		/// 使われているパラメータ名のリスト。
 		/// </summary>
 		private readonly HashSet<string> _usedParameterNames;
-		
+
 		#endregion
 
 		#region Private Property
@@ -152,6 +154,7 @@ namespace Raitichan.Script.Util.Editor {
 		/// <summary>
 		/// 複製されたステートマシン内の全要素を指定された<see cref="UnityEngine.Object"/>のサブアセットとして追加します。
 		/// ここで保存しない場合Unityを閉じた際に全て失われます。
+		/// すでにアセットに追加されている物は無視されます。
 		/// </summary>
 		/// <param name="dst">保存先</param>
 		/// <returns>保存に失敗した場合false</returns>
@@ -159,23 +162,30 @@ namespace Raitichan.Script.Util.Editor {
 			if (!this.IsRootStateMachine) return false;
 			string path = AssetDatabase.GetAssetPath(dst);
 			if (string.IsNullOrEmpty(path)) return false;
-			foreach (ClonedStateMachineInfo animatorStateMachine in this._clonedStateMachines.Values) {
+			foreach (ClonedStateMachineInfo animatorStateMachine in this._clonedStateMachines.Values.Where(
+				         animatorStateMachine =>
+					         string.IsNullOrEmpty(AssetDatabase.GetAssetPath(animatorStateMachine.StateMachine)))) {
 				AssetDatabase.AddObjectToAsset(animatorStateMachine.StateMachine, path);
 			}
 
-			foreach (AnimatorState animatorState in this._clonedStates.Values) {
+			foreach (AnimatorState animatorState in this._clonedStates.Values.Where(animatorState =>
+				         string.IsNullOrEmpty(AssetDatabase.GetAssetPath(animatorState)))) {
 				AssetDatabase.AddObjectToAsset(animatorState, path);
 			}
 
-			foreach (ClonedTransitionInfo animatorStateTransition in this._clonedTransitions) {
+			foreach (ClonedTransitionInfo animatorStateTransition in this._clonedTransitions.Where(
+				         animatorStateTransition =>
+					         string.IsNullOrEmpty(AssetDatabase.GetAssetPath(animatorStateTransition.Transition)))) {
 				AssetDatabase.AddObjectToAsset(animatorStateTransition.Transition, path);
 			}
 
-			foreach (StateMachineBehaviour behaviour in this._clonedBehaviours) {
+			foreach (StateMachineBehaviour behaviour in this._clonedBehaviours.Where(behaviour =>
+				         string.IsNullOrEmpty(AssetDatabase.GetAssetPath(behaviour)))) {
 				AssetDatabase.AddObjectToAsset(behaviour, path);
 			}
 
-			foreach (BlendTree blendTree in this._clonedBlendTrees) {
+			foreach (BlendTree blendTree in this._clonedBlendTrees.Where(blendTree =>
+				         string.IsNullOrEmpty(AssetDatabase.GetAssetPath(blendTree)))) {
 				AssetDatabase.AddObjectToAsset(blendTree, path);
 			}
 
@@ -190,6 +200,62 @@ namespace Raitichan.Script.Util.Editor {
 		public bool IsUsedPropertyName(string propertyName) {
 			return this._usedParameterNames.Contains(propertyName);
 		}
+
+		/// <summary>
+		/// この複製機のソースが参照元のSyncedLayerを指定したレイヤーに複製します。
+		/// </summary>
+		/// <param name="srcController">参照元のコントローラ</param>
+		/// <param name="srcIndex">参照レイヤーのインデックス</param>
+		/// <param name="dst">複製先レイヤー</param>
+		/// <returns>内部で複製されたアセットがある場合trueが返ります。trueの場合SaveAssetを実行してください。</returns>
+		public bool CloneSyncedLayer(AnimatorController srcController, int srcIndex, AnimatorControllerLayer dst) {
+			bool returnFlag = false;
+			SerializedObject controller = new SerializedObject(srcController);
+			controller.Update();
+
+			SerializedProperty animatorLayersProperty = controller.FindProperty("m_AnimatorLayers");
+			SerializedProperty animatorLayersPropertyElement = animatorLayersProperty.GetArrayElementAtIndex(srcIndex);
+			SerializedProperty motionsProperty = animatorLayersPropertyElement.FindPropertyRelative("m_Motions");
+			SerializedProperty behavioursProperty = animatorLayersPropertyElement.FindPropertyRelative("m_Behaviours");
+
+			for (int i = 0; i < motionsProperty.arraySize; i++) {
+				SerializedProperty motionsPropertyElement = motionsProperty.GetArrayElementAtIndex(i);
+				SerializedProperty stateProperty = motionsPropertyElement.FindPropertyRelative("m_State");
+				SerializedProperty motionProperty = motionsPropertyElement.FindPropertyRelative("m_Motion");
+				
+				int stateInstanceId = stateProperty.objectReferenceInstanceIDValue;
+				Object motionObject = motionProperty.objectReferenceValue;
+				if (!(motionObject is Motion motion)) continue; // もしobjectがモーションで無ければスキップ
+				if (motion is BlendTree blendTree) {
+					// ブレンドツリーの場合複製。
+					motion = this.CloneBlendTree(blendTree);
+					returnFlag = true;
+				}
+
+				dst.SetOverrideMotion(this._clonedStates[stateInstanceId], motion);
+			}
+
+			for (int i = 0; i < behavioursProperty.arraySize; i++) {
+				SerializedProperty behavioursPropertyElement = behavioursProperty.GetArrayElementAtIndex(i);
+				SerializedProperty stateProperty = behavioursPropertyElement.FindPropertyRelative("m_State");
+				SerializedProperty behaviourProperty = behavioursPropertyElement.FindPropertyRelative("m_StateMachineBehaviours");
+				
+				int stateInstanceId = stateProperty.objectReferenceInstanceIDValue;
+				if (behaviourProperty.arraySize <= 0) continue;
+				StateMachineBehaviour[] behaviours = new StateMachineBehaviour[behaviourProperty.arraySize];
+				for (int j = 0; j < behaviourProperty.arraySize; j++) {
+					Object behaviourObject = behaviourProperty.GetArrayElementAtIndex(j).objectReferenceValue;
+					if (!(behaviourObject is StateMachineBehaviour behaviour)) continue; // もしobjectがビヘイビアで無ければスキップ
+					returnFlag = true;
+					behaviours[j] = this.CloneBehaviour(behaviour);
+				}
+
+				dst.SetOverrideBehaviours(this._clonedStates[stateInstanceId], behaviours);
+			}
+
+			return returnFlag;
+		}
+
 		#endregion
 
 		#region Private Method
@@ -498,7 +564,7 @@ namespace Raitichan.Script.Util.Editor {
 				cloned[i] = src[i];
 				this.RegisterUsedParameterName(cloned[i].parameter);
 			}
-			
+
 			return cloned;
 		}
 
@@ -589,9 +655,10 @@ namespace Raitichan.Script.Util.Editor {
 				this._parent.RegisterUsedParameterName(parameterName);
 				return;
 			}
+
 			this._usedParameterNames.Add(parameterName);
 		}
-		
+
 		#endregion
 
 		#endregion
