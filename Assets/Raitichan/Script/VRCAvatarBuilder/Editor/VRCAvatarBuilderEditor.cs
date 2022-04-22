@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Raitichan.Script.Util.Editor;
+using Raitichan.Script.Util.Editor.Extension;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,6 +26,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		private VRCAvatarBuilder _target;
 
 		private SerializedProperty _languageProperty;
+		private SerializedProperty _emptyAnimatorControllerProperty;
 		private SerializedProperty _avatarDescriptorProperty;
 		private SerializedProperty _workingDirectoryPathProperty;
 		private SerializedProperty _scaleProperty;
@@ -42,6 +45,8 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			this._target = this.target as VRCAvatarBuilder;
 
 			this._languageProperty = this.serializedObject.FindProperty(VRCAvatarBuilder.LanguagePropertyName);
+			this._emptyAnimatorControllerProperty =
+				this.serializedObject.FindProperty(VRCAvatarBuilder.EmptyAnimatorControllerPropertyName);
 			this._avatarDescriptorProperty =
 				this.serializedObject.FindProperty(VRCAvatarBuilder.AvatarDescriptorPropertyName);
 			this._workingDirectoryPathProperty =
@@ -63,8 +68,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 				this.serializedObject.FindProperty(VRCAvatarBuilder.LeftExpressionAnimationsPropertyName);
 			this._rightExpressionAnimationsProperty =
 				this.serializedObject.FindProperty(VRCAvatarBuilder.RightExpressionAnimationsPropertyName);
-
-
 		}
 
 		public override void OnInspectorGUI() {
@@ -74,6 +77,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			Strings.Lang = (Strings.Languages)this._languageProperty.intValue;
 
 			EditorGUILayout.PropertyField(this._avatarDescriptorProperty, new GUIContent(Strings.TargetAvatar));
+			EditorGUILayout.PropertyField(this._emptyAnimatorControllerProperty);
 			EditorGUILayout.PropertyField(this._workingDirectoryPathProperty, new GUIContent(Strings.WorkingDirectory));
 			EditorGUILayout.PropertyField(this._scaleProperty, new GUIContent(Strings.AvatarScale));
 			EditorGUILayout.PropertyField(this._uploadSceneProperty, new GUIContent(Strings.UploadScene));
@@ -102,6 +106,10 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			if (string.IsNullOrEmpty(this._target.WorkingDirectoryPath)) return false;
 			if (this._target.UploadScene == null) return false;
 			if (this._target.BaseLayers == null) return false;
+			if (this._target.AdditiveLayers == null) return false;
+			if (this._target.GestureLayers == null) return false;
+			if (this._target.ActionLayers == null) return false;
+			if (this._target.FxLayers == null) return false;
 			return true;
 		}
 
@@ -116,8 +124,9 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			uint version = this.GetNextBuildVersion(uploadScene);
 			VRCAvatarDescriptor avatar = this.CloneAvatar(uploadScene, version);
 			this.ApplyAvatarScale(avatar);
-			
-			
+			string outPutPath = this.CheckOutputDirectory(this._target.gameObject.name, avatar);
+			this.BuildBaseLayer(avatar, outPutPath);
+
 
 			Undo.RegisterCreatedObjectUndo(avatar.gameObject, "Avatar Build");
 		}
@@ -127,12 +136,10 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		/// 存在しない場合作成。
 		/// </summary>
 		private void WorkingDirectoryCheck() {
-			string fullPath = AssetPathUtil.GetFullPath(this._target.WorkingDirectoryPath);
-			if (!Directory.Exists(fullPath)) {
-				Directory.CreateDirectory(fullPath);
-			}
+			string fullPath = AssetPathUtil.GetFullPath(this._target.WorkingDirectoryPath) + "/out";
+			if (Directory.Exists(fullPath)) return;
+			Directory.CreateDirectory(fullPath);
 			AssetDatabase.Refresh();
-			AssetDatabase.CreateFolder(this._target.WorkingDirectoryPath, "out");
 		}
 
 		/// <summary>
@@ -175,6 +182,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 				.Max() + 1;
 		}
 
+		// ReSharper disable Unity.PerformanceAnalysis
 		/// <summary>
 		/// アバターをクローンし、名前を変更し、シーンに移動。
 		/// </summary>
@@ -201,6 +209,40 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			Vector3 viewPosition = avatar.ViewPosition;
 			viewPosition *= scale;
 			avatar.ViewPosition = viewPosition;
+		}
+
+		/// <summary>
+		/// 出力用ディレクトリを作成します。
+		/// すでに存在している場合別の名前で作成します。
+		/// </summary>
+		/// <param name="avatarName"></param>
+		/// <param name="avatar"></param>
+		/// <returns></returns>
+		private string CheckOutputDirectory(string avatarName, Component avatar) {
+			string assetPath = this._target.WorkingDirectoryPath
+			                   + "/" + VRCAvatarBuilder.OUTPUT_DIRECTORY
+			                   + "/" + AssetPathUtil.ReplaceInvalidFileNameChars(avatarName, '_')
+			                   + "/" + AssetPathUtil.ReplaceInvalidFileNameChars(avatar.gameObject.name, '_')
+			                   + VRCAvatarBuilder.GENERATED_SUFFIX;
+			
+			string fullPath = AssetPathUtil.GetFullPath(assetPath);
+			if (Directory.Exists(fullPath)) {
+				assetPath = AssetDatabase.GenerateUniqueAssetPath(assetPath);
+				fullPath = AssetPathUtil.GetFullPath(assetPath);
+			}
+			Directory.CreateDirectory(fullPath);
+			AssetDatabase.Refresh();
+
+			return assetPath;
+		}
+
+
+		private void BuildBaseLayer(VRCAvatarDescriptor avatar, string outPutPath) {
+			string emptyControllerPath = AssetDatabase.GetAssetPath(this._target.EmptyAnimatorController);
+			string dstAssetPath = outPutPath + "/BaseLayer.controller";
+			AssetDatabase.CopyAsset(emptyControllerPath, dstAssetPath);
+			AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(dstAssetPath);
+			
 		}
 	}
 }

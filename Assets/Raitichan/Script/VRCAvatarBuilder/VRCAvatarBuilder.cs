@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Serialization;
 using VRC.SDK3.Avatars.Components;
@@ -12,6 +13,9 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 	/// アバタービルダーコンポーネント
 	/// </summary>
 	public class VRCAvatarBuilder : MonoBehaviour {
+		public const string OUTPUT_DIRECTORY = "/out";
+		public const string GENERATED_SUFFIX = "_Generated";
+
 		#region Language Parameter
 
 		[FormerlySerializedAs("_language")] [SerializeField]
@@ -28,6 +32,25 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		}
 
 		public static string LanguagePropertyName => nameof(languages);
+
+		#endregion
+
+		#region EmptyAnimatorController Parameter
+
+		[SerializeField] private AnimatorController _emptyAnimatorController;
+
+		public AnimatorController EmptyAnimatorController {
+			get => this._emptyAnimatorController;
+			set {
+				if (this._emptyAnimatorController == value) return;
+				this.BeginUpdate();
+				this._emptyAnimatorController = value;
+				this.Update();
+			}
+		}
+
+		public static string EmptyAnimatorControllerPropertyName => nameof(_emptyAnimatorController);
+
 
 		#endregion
 
