@@ -3,8 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Raitichan.Script.Util.Editor;
-using Raitichan.Script.Util.Editor.Extension;
+using Raitichan.Script.Util;
+using Raitichan.Script.Util.Extension;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
@@ -39,6 +39,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		private SerializedProperty _fxLayersProperty;
 		private SerializedProperty _leftGestureAnimationsProperty;
 		private SerializedProperty _rightGestureAnimationsProperty;
+		private SerializedProperty _fxIdleAnimationsProperty;
 		private SerializedProperty _leftExpressionAnimationsProperty;
 		private SerializedProperty _rightExpressionAnimationsProperty;
 		private SerializedProperty _vrcExpressionsProperty;
@@ -66,6 +67,8 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 				this.serializedObject.FindProperty(VRCAvatarBuilder.LeftGestureAnimationsPropertyName);
 			this._rightGestureAnimationsProperty =
 				this.serializedObject.FindProperty(VRCAvatarBuilder.RightGestureAnimationsPropertyName);
+			this._fxIdleAnimationsProperty =
+				this.serializedObject.FindProperty(VRCAvatarBuilder.FxIdleAAnimationPropertyName);
 			this._leftExpressionAnimationsProperty =
 				this.serializedObject.FindProperty(VRCAvatarBuilder.LeftExpressionAnimationsPropertyName);
 			this._rightExpressionAnimationsProperty =
@@ -92,12 +95,13 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			EditorGUILayout.PropertyField(this._fxLayersProperty);
 			EditorGUILayout.PropertyField(this._leftGestureAnimationsProperty);
 			EditorGUILayout.PropertyField(this._rightGestureAnimationsProperty);
+			EditorGUILayout.PropertyField(this._fxIdleAnimationsProperty);
 			EditorGUILayout.PropertyField(this._leftExpressionAnimationsProperty);
 			EditorGUILayout.PropertyField(this._rightExpressionAnimationsProperty);
 			EditorGUILayout.PropertyField(this._vrcExpressionsProperty);
 			using (new EditorGUI.DisabledScope(!this.CanBuild())) {
 				if (GUILayout.Button(Strings.Build)) {
-					this.Build();
+					this.BuildOld();
 				}
 			}
 
@@ -121,7 +125,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		/// <summary>
 		/// ビルドの実行
 		/// </summary>
-		private void Build() {
+		private void BuildOld() {
 			this.WorkingDirectoryCheck();
 			Scene uploadScene = this.CheckScene();
 			CleanupScene(uploadScene);
@@ -139,6 +143,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 
 			Undo.RegisterCreatedObjectUndo(avatar.gameObject, "Avatar Build");
 		}
+		
 
 		/// <summary>
 		/// 作業フォルダの存在チェック
@@ -334,6 +339,12 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 					controller.AppendLayerAll(aController);
 				} else {
 					throw new NotSupportedException($"Builder is NotSupport ControllerType {raController.GetType()}");
+				}
+			}
+			
+			foreach (AnimatorState state in controller.layers[0].stateMachine.states.Select(state =>state.state)) {
+				if (state.name == "Idle") {
+					state.motion = this._target.FxIdleAAnimation;
 				}
 			}
 			

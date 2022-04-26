@@ -1,15 +1,15 @@
 ﻿// #define NO_HIDE_IN_HIERARCHY // これをつけるとhierarchyに表示されるようになる。
+
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Raitichan.Script.Util.Editor {
+namespace Raitichan.Script.Util {
 	/// <summary>
 	/// ステートマシンを複製するためのクラス。
 	/// Create by Raitichan
@@ -162,9 +162,10 @@ namespace Raitichan.Script.Util.Editor {
 			if (!this.IsRootStateMachine) return false;
 			string path = AssetDatabase.GetAssetPath(dst);
 			if (string.IsNullOrEmpty(path)) return false;
-			foreach (ClonedStateMachineInfo animatorStateMachine in this._clonedStateMachines.Values.Where(
-				         animatorStateMachine =>
-					         string.IsNullOrEmpty(AssetDatabase.GetAssetPath(animatorStateMachine.StateMachine)))) {
+			foreach (ClonedStateMachineInfo animatorStateMachine in this._clonedStateMachines.Values
+				         .Where(
+					         animatorStateMachine =>
+						         string.IsNullOrEmpty(AssetDatabase.GetAssetPath(animatorStateMachine.StateMachine)))) {
 				AssetDatabase.AddObjectToAsset(animatorStateMachine.StateMachine, path);
 			}
 
@@ -222,7 +223,7 @@ namespace Raitichan.Script.Util.Editor {
 				SerializedProperty motionsPropertyElement = motionsProperty.GetArrayElementAtIndex(i);
 				SerializedProperty stateProperty = motionsPropertyElement.FindPropertyRelative("m_State");
 				SerializedProperty motionProperty = motionsPropertyElement.FindPropertyRelative("m_Motion");
-				
+
 				int stateInstanceId = stateProperty.objectReferenceInstanceIDValue;
 				Object motionObject = motionProperty.objectReferenceValue;
 				if (!(motionObject is Motion motion)) continue; // もしobjectがモーションで無ければスキップ
@@ -238,8 +239,9 @@ namespace Raitichan.Script.Util.Editor {
 			for (int i = 0; i < behavioursProperty.arraySize; i++) {
 				SerializedProperty behavioursPropertyElement = behavioursProperty.GetArrayElementAtIndex(i);
 				SerializedProperty stateProperty = behavioursPropertyElement.FindPropertyRelative("m_State");
-				SerializedProperty behaviourProperty = behavioursPropertyElement.FindPropertyRelative("m_StateMachineBehaviours");
-				
+				SerializedProperty behaviourProperty =
+					behavioursPropertyElement.FindPropertyRelative("m_StateMachineBehaviours");
+
 				int stateInstanceId = stateProperty.objectReferenceInstanceIDValue;
 				if (behaviourProperty.arraySize <= 0) continue;
 				StateMachineBehaviour[] behaviours = new StateMachineBehaviour[behaviourProperty.arraySize];
@@ -307,8 +309,9 @@ namespace Raitichan.Script.Util.Editor {
 		/// </summary>
 		private void ReplaceDefaultState() {
 			if (!this.IsRootStateMachine) return;
-			foreach (ClonedStateMachineInfo animatorStateMachine in this._clonedStateMachines.Values.Where(
-				         animatorStateMachine => !animatorStateMachine.DefaultStateIsNull)) {
+			foreach (ClonedStateMachineInfo animatorStateMachine in this._clonedStateMachines.Values
+				         .Where(
+					         animatorStateMachine => !animatorStateMachine.DefaultStateIsNull)) {
 				animatorStateMachine.StateMachine.defaultState =
 					this._clonedStates[animatorStateMachine.DefaultStateInstanceId];
 			}
@@ -391,6 +394,7 @@ namespace Raitichan.Script.Util.Editor {
 				children = childMotions,
 				blendParameter = src.blendParameter,
 				blendParameterY = src.blendParameterY,
+				blendType = src.blendType,
 				minThreshold = src.minThreshold,
 				maxThreshold = src.maxThreshold,
 				useAutomaticThresholds = src.useAutomaticThresholds
@@ -664,3 +668,4 @@ namespace Raitichan.Script.Util.Editor {
 		#endregion
 	}
 }
+#endif

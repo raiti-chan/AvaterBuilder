@@ -1,14 +1,15 @@
-﻿using UnityEditor.Animations;
+﻿#if UNITY_EDITOR
+
+using UnityEditor.Animations;
 using UnityEngine;
 
-
-namespace Raitichan.Script.Util.Editor {
+namespace Raitichan.Script.Util {
 	public partial class StateMachineCloner {
 		private struct ChildStateMachineCloner {
-			public readonly StateMachineCloner Cloner;
+			public readonly Util.StateMachineCloner Cloner;
 			public readonly Vector3 Position;
 
-			public ChildStateMachineCloner(StateMachineCloner cloner, Vector3 position) {
+			public ChildStateMachineCloner(Util.StateMachineCloner cloner, Vector3 position) {
 				Cloner = cloner;
 				Position = position;
 			}
@@ -41,3 +42,4 @@ namespace Raitichan.Script.Util.Editor {
 		}
 	}
 }
+#endif

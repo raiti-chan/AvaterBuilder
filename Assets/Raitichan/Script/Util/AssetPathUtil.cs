@@ -1,8 +1,9 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.IO;
 using System.Linq;
 
-namespace Raitichan.Script.Util.Editor {
+namespace Raitichan.Script.Util {
 	public static class AssetPathUtil {
 
 		private static readonly char[] _INVALID_CHARS = Path.GetInvalidPathChars();
@@ -32,3 +33,4 @@ namespace Raitichan.Script.Util.Editor {
 		}
 	}
 }
+#endif

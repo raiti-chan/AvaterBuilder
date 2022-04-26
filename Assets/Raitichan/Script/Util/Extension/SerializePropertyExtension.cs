@@ -1,9 +1,9 @@
-﻿using System.Collections;
+﻿#if UNITY_EDITOR
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 
-namespace Raitichan.Script.Util.Editor.Extension {
+namespace Raitichan.Script.Util.Extension {
 	public static class SerializePropertyExtension {
 		/// <summary>
 		/// <see cref="SerializedProperty"/>から<see cref="IEnumerable"/>オブジェクトを取得します。
@@ -18,3 +18,4 @@ namespace Raitichan.Script.Util.Editor.Extension {
 		}
 	}
 }
+#endif

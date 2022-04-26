@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Raitichan.Script.Util.Editor.Extension;
+using Raitichan.Script.Util.Extension;
 using UnityEditor;
 using UnityEngine;
 

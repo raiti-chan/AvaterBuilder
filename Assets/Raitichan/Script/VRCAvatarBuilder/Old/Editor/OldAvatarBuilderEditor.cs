@@ -1,6 +1,6 @@
 ﻿using Assets.Raitichan.Script.BoneRemapper;
 using System.IO;
-using Raitichan.Script.Util.Editor;
+using Raitichan.Script.Util;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;

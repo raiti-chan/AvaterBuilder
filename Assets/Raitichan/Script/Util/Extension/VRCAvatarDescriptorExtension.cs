@@ -1,10 +1,11 @@
-﻿using System.Linq;
-using BestHTTP.SecureProtocol.Org.BouncyCastle.Security;
+﻿#if UNITY_EDITOR
+using System.ComponentModel;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 
-namespace Raitichan.Script.Util.Editor.Extension {
+namespace Raitichan.Script.Util.Extension {
 	public static class VRCAvatarDescriptorExtension {
 		/// <summary>
 		/// レイヤーの所属するグループのタイプ
@@ -19,7 +20,7 @@ namespace Raitichan.Script.Util.Editor.Extension {
 		/// </summary>
 		/// <param name="type">レイヤタイプ</param>
 		/// <returns>レイヤグループ</returns>
-		/// <exception cref="InvalidParameterException">指定されたタイプが無効な場合</exception>
+		/// <exception cref="InvalidEnumArgumentException">指定されたタイプが無効な場合</exception>
 		// ReSharper disable once MemberCanBePrivate.Global
 		public static LayerGroupType GetLayerGroupType(this VRCAvatarDescriptor.AnimLayerType type) {
 			switch (type) {
@@ -35,7 +36,7 @@ namespace Raitichan.Script.Util.Editor.Extension {
 					return LayerGroupType.Special;
 				case VRCAvatarDescriptor.AnimLayerType.Deprecated0:
 				default:
-					throw new InvalidParameterException(
+					throw new InvalidEnumArgumentException(
 						$"Invalid Animation LayerType : {nameof(type)} = {type}");
 			}
 		}
@@ -48,7 +49,7 @@ namespace Raitichan.Script.Util.Editor.Extension {
 		/// <param name="descriptor"></param>
 		/// <param name="layerType"></param>
 		/// <returns></returns>
-		/// <exception cref="InvalidParameterException">指定されたタイプが無効な場合</exception>
+		/// <exception cref="InvalidEnumArgumentException">指定されたタイプが無効な場合</exception>
 		public static RuntimeAnimatorController GetLayer(this VRCAvatarDescriptor descriptor,
 			VRCAvatarDescriptor.AnimLayerType layerType) {
 			VRCAvatarDescriptor.CustomAnimLayer[] layers = layerType.GetLayerGroupType() == LayerGroupType.Base
@@ -60,7 +61,13 @@ namespace Raitichan.Script.Util.Editor.Extension {
 				.FirstOrDefault();
 		}
 
-
+		/// <summary>
+		/// 指定されたタイプのレイヤーを設定します。
+		/// </summary>
+		/// <param name="descriptor"></param>
+		/// <param name="type"></param>
+		/// <param name="controller"></param>
+		/// <exception cref="InvalidEnumArgumentException">指定されたタイプが無効な場合</exception>
 		public static void SetLayer(this VRCAvatarDescriptor descriptor, VRCAvatarDescriptor.AnimLayerType type,
 			RuntimeAnimatorController controller) {
 			SerializedObject serializedObject = new SerializedObject(descriptor);
@@ -92,3 +99,5 @@ namespace Raitichan.Script.Util.Editor.Extension {
 		}
 	}
 }
+
+#endif

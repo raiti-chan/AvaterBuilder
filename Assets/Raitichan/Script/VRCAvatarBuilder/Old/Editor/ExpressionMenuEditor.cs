@@ -1,5 +1,5 @@
 ﻿using System;
-using Raitichan.Script.Util.Editor;
+using Raitichan.Script.Util;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Raitichan.Script.Util.Editor.Extension {
+namespace Raitichan.Script.Util.Extension {
 	public static class GameObjectExtension {
 
 		public static IEnumerable<GameObject> Childs(this GameObject gameObject) {
@@ -20,3 +21,4 @@ namespace Raitichan.Script.Util.Editor.Extension {
 
 	}
 }
+#endif

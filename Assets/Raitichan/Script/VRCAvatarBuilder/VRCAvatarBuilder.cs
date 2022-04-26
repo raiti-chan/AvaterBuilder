@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Serialization;
 using VRC.SDK3.Avatars.Components;
@@ -7,6 +6,7 @@ using VRC.SDK3.Avatars.ScriptableObjects;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Animations;
 #endif
 
 namespace Raitichan.Script.VRCAvatarBuilder {
@@ -38,6 +38,7 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		#region EmptyAnimatorController Parameter
 
+#if UNITY_EDITOR
 		[SerializeField] private AnimatorController _emptyAnimatorController;
 
 		public AnimatorController EmptyAnimatorController {
@@ -51,7 +52,7 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		}
 
 		public static string EmptyAnimatorControllerPropertyName => nameof(_emptyAnimatorController);
-
+#endif
 
 		#endregion
 
@@ -222,7 +223,7 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		#region LeftGestureAnimations Parameter
 
-		[SerializeField] private Motion[] _leftGestureAnimations = new Motion[7];
+		[SerializeField] private Motion[] _leftGestureAnimations = new Motion[8];
 
 		public Motion[] LeftGestureAnimations {
 			get => this._leftGestureAnimations;
@@ -236,12 +237,11 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		public static string LeftGestureAnimationsPropertyName => nameof(_leftGestureAnimations);
 
-
 		#endregion
 
 		#region RightGestureAnimations Parameter
 
-		[SerializeField] private Motion[] _rightGestureAnimations = new Motion[7];
+		[SerializeField] private Motion[] _rightGestureAnimations = new Motion[8];
 
 		public Motion[] RightGestureAnimations {
 			get => this._rightGestureAnimations;
@@ -255,12 +255,30 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		public static string RightGestureAnimationsPropertyName => nameof(_rightGestureAnimations);
 
+		#endregion
+
+		#region FxIdleAAnimation Parameter
+
+		[SerializeField] private Motion _fxIdleAAnimation;
+
+		public Motion FxIdleAAnimation {
+			get => this._fxIdleAAnimation;
+			set {
+				if (this._fxIdleAAnimation == value) return;
+				this.BeginUpdate();
+				this._fxIdleAAnimation = value;
+				this.Update();
+			}
+		}
+
+		public static string FxIdleAAnimationPropertyName => nameof(_fxIdleAAnimation);
+
 
 		#endregion
 		
 		#region LeftExpressionAnimations Parameter
 
-		[SerializeField] private Motion[] _leftExpressionAnimations = new Motion[7];
+		[SerializeField] private Motion[] _leftExpressionAnimations = new Motion[8];
 
 		public Motion[] LeftExpressionAnimations {
 			get => this._leftExpressionAnimations;
@@ -274,12 +292,11 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		public static string LeftExpressionAnimationsPropertyName => nameof(_leftExpressionAnimations);
 
-
 		#endregion
 
 		#region RightExpressionAnimations Parameter
 
-		[SerializeField] private Motion[] _rightExpressionAnimations = new Motion[7];
+		[SerializeField] private Motion[] _rightExpressionAnimations = new Motion[8];
 
 		public Motion[] RightExpressionAnimations {
 			get => this._rightExpressionAnimations;
@@ -292,7 +309,6 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		}
 
 		public static string RightExpressionAnimationsPropertyName => nameof(_rightExpressionAnimations);
-
 
 		#endregion
 
@@ -312,11 +328,10 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		public static string ExpressionsMenuPropertyName => nameof(_expressionsMenu);
 
-
 		#endregion
-		
+
 		// TODO: 複合アニメーションの対応
-		
+
 		#region Private Method
 
 		private void BeginUpdate() {
@@ -327,14 +342,12 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		private void Update() {
 #if UNITY_EDITOR
-			Undo.RecordObject(this, "Change Property");
 			EditorUtility.SetDirty(this);
 #endif
 		}
 
 		#endregion
 	}
-
 
 
 	public enum GestureTypes {

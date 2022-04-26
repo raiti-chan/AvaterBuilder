@@ -169,7 +169,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureRightWeight
@@ -272,7 +272,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureRightWeight
@@ -532,7 +532,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureRightWeight
@@ -558,7 +558,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureLeftWeight
@@ -634,7 +634,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureLeftWeight
@@ -710,7 +710,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureLeftWeight
@@ -811,7 +811,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureRightWeight
@@ -988,7 +988,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureRightWeight
@@ -1039,7 +1039,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureRightWeight
@@ -1065,7 +1065,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureLeftWeight
@@ -1117,7 +1117,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureLeftWeight
@@ -1143,7 +1143,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 1
+  m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 6090d50649039b04e9e0f8736dac4f7f, type: 2}
   m_Tag: 
   m_SpeedParameter: GestureLeftWeight

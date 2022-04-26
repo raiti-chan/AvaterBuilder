@@ -1,9 +1,9 @@
-﻿using Raitichan.Script.Util.Editor.Extension;
+﻿using Raitichan.Script.Util.Extension;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using VRC.SDK3.Avatars.ScriptableObjects;
-using StateMachineCloner = Raitichan.Script.Util.Editor.StateMachineCloner;
+using StateMachineCloner = Raitichan.Script.Util.StateMachineCloner;
 
 namespace Raitichan.Script.Test.Editor {
 	public class TestWindow : EditorWindow {

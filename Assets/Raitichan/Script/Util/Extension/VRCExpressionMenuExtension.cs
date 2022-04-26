@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.ScriptableObjects;
 
-namespace Raitichan.Script.Util.Editor.Extension {
+namespace Raitichan.Script.Util.Extension {
 	public static class VRCExpressionMenuExtension {
 		public static VRCExpressionsMenu DeepClone(this VRCExpressionsMenu src) {
 			VRCExpressionsMenu cloned = Object.Instantiate(src);
@@ -61,3 +62,4 @@ namespace Raitichan.Script.Util.Editor.Extension {
 		}
 	}
 }
+#endif

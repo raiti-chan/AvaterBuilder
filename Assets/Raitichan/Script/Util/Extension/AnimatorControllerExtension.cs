@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
 using System.Collections.Immutable;
 using System.Linq;
 using UnityEditor.Animations;
 using UnityEngine;
 
-namespace Raitichan.Script.Util.Editor.Extension {
+namespace Raitichan.Script.Util.Extension {
 	public static class AnimatorControllerExtension {
 		/// <summary>
 		/// ソースの指定されたレイヤーを複製し、自身に追加します。
@@ -17,7 +17,7 @@ namespace Raitichan.Script.Util.Editor.Extension {
 		public static bool AppendLayer(this AnimatorController dst, AnimatorController src, int layerIndex) {
 			AnimatorControllerLayer srcLayer = src.layers[layerIndex];
 			if (srcLayer.syncedLayerIndex != -1) return false;
-			StateMachineCloner cloner = new StateMachineCloner(srcLayer.stateMachine);
+			Util.StateMachineCloner cloner = new Util.StateMachineCloner(srcLayer.stateMachine);
 			AnimatorStateMachine stateMachine = cloner.CloneStateMachine();
 			cloner.SaveAsset(dst);
 			AnimatorControllerLayer cloned = new AnimatorControllerLayer {
@@ -53,10 +53,10 @@ namespace Raitichan.Script.Util.Editor.Extension {
 
 		public static void AppendLayerAll(this AnimatorController dst, AnimatorController src) {
 			int dstLayerSize = dst.layers.Length;
-			StateMachineCloner[] cloners = new StateMachineCloner[src.layers.Length];
+			Util.StateMachineCloner[] cloners = new Util.StateMachineCloner[src.layers.Length];
 			for (int i = 0; i < src.layers.Length; i++) {
 				AnimatorControllerLayer srcLayer = src.layers[i];
-				cloners[i] = new StateMachineCloner(srcLayer.stateMachine);
+				cloners[i] = new Util.StateMachineCloner(srcLayer.stateMachine);
 				AnimatorStateMachine stateMachine = cloners[i].CloneStateMachine();
 				cloners[i].SaveAsset(dst);
 
@@ -96,3 +96,4 @@ namespace Raitichan.Script.Util.Editor.Extension {
 		}
 	}
 }
+#endif

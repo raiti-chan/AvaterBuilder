@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using System.Linq;
 using Assets.Raitichan.Script.BoneRemapper;
 using UnityEngine;
 
-namespace Raitichan.Script.Util.Editor.Extension {
+namespace Raitichan.Script.Util.Extension {
 	public static class TransformExtension {
 
 		public static IEnumerable<GameObject> ChildObjects(this Transform transform) {
@@ -33,3 +34,4 @@ namespace Raitichan.Script.Util.Editor.Extension {
 
 	}
 }
+#endif

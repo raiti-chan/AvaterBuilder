@@ -1,4 +1,4 @@
-﻿using Raitichan.Script.Util.Editor.Extension;
+﻿using Raitichan.Script.Util.Extension;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
