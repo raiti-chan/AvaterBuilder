@@ -16,12 +16,14 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		public const string GESTURE_DIR_PATH = CONTROLLER_DIR_PATH + "/Gesture";
 		public const string ACTION_DIR_PATH = CONTROLLER_DIR_PATH + "/Action";
 		public const string FX_DIR_PATH = CONTROLLER_DIR_PATH + "/Fx";
+		public const string UTIL_DIR_PATH = CONTROLLER_DIR_PATH + "/Util";
 		
 		public const string DEFAULT_BASE_FORCE_LOCOMOTION_LAYER = BASE_DIR_PATH + "/VRCAvatarBuilderBaseLayer-ForceLocomotionAnimation.controller";
 		public const string DEFAULT_ADDITIVE_LAYER = ADDITIVE_DIR_PATH + "/VRCAvatarBuilderAdditiveLayer.controller";
 		public const string DEFAULT_GESTURE_LAYER = GESTURE_DIR_PATH + "/VRCAvatarBuilderGestureLayer.controller";
 		public const string DEFAULT_ACTION_LAYER = ACTION_DIR_PATH + "/VRCAvatarBuilderActionLayer.controller";
 		public const string DEFAULT_FX_EXPRESSION_LAYER = FX_DIR_PATH + "/VRCAvatarBuilderFxLayer-Expression.controller";
+		public const string UTIL_IDLE_LAYER = UTIL_DIR_PATH + "/VRCAvatarBuilder-Idle.controller";
 
 		public const string GENERATE_BASE_LAYER_FILENAME = "/GeneratedBaseLayer.controller";
 		public const string GENERATE_ADDITIVE_LAYER_FILENAME = "/GeneratedAdditiveLayer.controller";

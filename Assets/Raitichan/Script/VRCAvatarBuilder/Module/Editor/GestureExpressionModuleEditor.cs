@@ -10,16 +10,23 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 		private GestureExpressionModule _target;
 
 		private SerializedProperty _useDifferentAnimationProperty;
+		private SerializedProperty _useUserDefinedAnimationProperty;
+		private SerializedProperty _idleAnimationProperty;
 		private SerializedProperty _leftAnimationProperty;
 		private SerializedProperty _rightAnimationProperty;
 
 		private AnimatorController _controller;
+		private AnimatorController _idleController;
 
 		private void OnEnable() {
 			this._target = this.target as GestureExpressionModule;
 
 			this._useDifferentAnimationProperty =
 				this.serializedObject.FindProperty(GestureExpressionModule.UseDifferentAnimationPropertyName);
+			this._useUserDefinedAnimationProperty =
+				this.serializedObject.FindProperty(GestureExpressionModule.UseUserDefinedIdleAnimationPropertyName);
+			this._idleAnimationProperty =
+				this.serializedObject.FindProperty(GestureExpressionModule.IdleAnimationPropertyName);
 			this._leftAnimationProperty =
 				this.serializedObject.FindProperty(GestureExpressionModule.LeftAnimationPropertyName);
 			this._rightAnimationProperty =
@@ -27,6 +34,8 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 
 			this._controller =
 				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.DEFAULT_FX_EXPRESSION_LAYER);
+			this._idleController =
+				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.UTIL_IDLE_LAYER);
 		}
 
 		public override void OnInspectorGUI() {
@@ -42,6 +51,19 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			}
 
 			GUILayout.Space(5);
+			EditorGUILayout.PropertyField(this._useUserDefinedAnimationProperty,
+				new GUIContent(Strings.GestureExpressionModuleEditor_UseUserDefinedIdleAnimation));
+			if (this._target.UseUserDefinedIdleAnimation) {
+				if (this._idleController == null) {
+					EditorGUILayout.HelpBox(Strings.NotFoundIdleTemplateLayer,
+						MessageType.Error);
+				}
+				using (new EditorGUI.IndentLevelScope()) {
+					EditorGUILayout.PropertyField(this._idleAnimationProperty, new GUIContent("Idle"));
+				}
+			}
+
+			GUILayout.Space(5);
 			EditorGUILayout.PropertyField(this._useDifferentAnimationProperty,
 				new GUIContent(Strings.GestureLayerModuleEditor_UseDifferentAnimationProperty));
 
@@ -49,7 +71,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			InitArray(this._rightAnimationProperty);
 
 			// TODO: アバターについてくるアニメーターから自動設定する機能を作りたい
-			// TODO: Idle レイヤーの設定
 
 			GUILayout.Space(15);
 			if (this._target.UseDifferentAnimation) {

@@ -33,6 +33,42 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 
 		#endregion
 
+		#region UseUserDefinedIdleAnimation Parameter
+
+		[SerializeField] private bool useUserDefinedIdleAnimation;
+
+		public bool UseUserDefinedIdleAnimation {
+			get => this.useUserDefinedIdleAnimation;
+			set {
+				if (this.useUserDefinedIdleAnimation == value) return;
+				this.BeginUpdate();
+				this.useUserDefinedIdleAnimation = value;
+				this.Update();
+			}
+		}
+
+		public static string UseUserDefinedIdleAnimationPropertyName => nameof(useUserDefinedIdleAnimation);
+
+		#endregion
+
+		#region IdleAnimation Parameter
+
+		[SerializeField] private AnimationClip _idleAnimation;
+
+		public AnimationClip IdleAnimation {
+			get => this._idleAnimation;
+			set {
+				if (this._idleAnimation == value) return;
+				this.BeginUpdate();
+				this._idleAnimation = value;
+				this.Update();
+			}
+		}
+
+		public static string IdleAnimationPropertyName => nameof(_idleAnimation);
+
+		#endregion
+
 		#region LeftAnimation Parameter
 
 		[SerializeField] private AnimationClip[] _leftAnimation = new AnimationClip[7];
@@ -72,6 +108,8 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 		#region ModuleMethod
 
 		public override void Build(VRCAvatarBuilderContext context) {
+			this.AddIdleLayerGenerator(context);
+
 			AnimatorController controller =
 				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.DEFAULT_FX_EXPRESSION_LAYER);
 
@@ -82,6 +120,22 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 				ReplaceData = {
 					[0] = leftReplaceData,
 					[1] = this.UseDifferentAnimation ? CreateReplaceData(this._rightAnimation) : leftReplaceData
+				}
+			};
+			context.AnimatorControllerLayerGenerators.FxLayerGenerators.Add(generator);
+		}
+
+		private void AddIdleLayerGenerator(VRCAvatarBuilderContext context) {
+			if (!this._useDifferentAnimation) return;
+
+			AnimatorController idleController =
+				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.UTIL_IDLE_LAYER);
+			
+			ReplaceMotionByStateNameLayerGenerator generator = new ReplaceMotionByStateNameLayerGenerator {
+				SrcController = idleController,
+				TempFileDir = context.OutputPath,
+				ReplaceData = {
+					[0] = new Dictionary<string, Motion> { { GestureTypes.Idle.ToString(), this._idleAnimation } }
 				}
 			};
 			context.AnimatorControllerLayerGenerators.FxLayerGenerators.Add(generator);

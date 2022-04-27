@@ -87,6 +87,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 
 		public override void OnInspectorGUI() {
 			this.serializedObject.Update();
+			// TODO: Emptyコントローラーがない場合のエラー
 
 			EditorGUILayout.PropertyField(this._languageProperty, new GUIContent(Strings.Language));
 			Strings.Lang = (Strings.Languages)this._languageProperty.intValue;

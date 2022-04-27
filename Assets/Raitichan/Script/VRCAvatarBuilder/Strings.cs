@@ -54,7 +54,7 @@
 		public static string Warning => _Warning[(int)Lang];
 
 		#endregion
-		
+
 		#region TargetAvatar
 
 		private static readonly string[] _TargetAvatar = {
@@ -129,6 +129,19 @@
 		};
 
 		public static string RightHand => _RightHand[(int)Lang];
+
+		#endregion
+
+		#region NotFoundIdleTemplateLayer
+
+		private static readonly string[] _NotFoundIdleTemplateLayer = {
+			"Idle用テンプレートレイヤーが見つかりません。\n" +
+			"アセットを再度インポートしてください。",
+			"Cannot find template layer for Idle.\n" +
+			"Please re-import the asset."
+		};
+
+		public static string NotFoundIdleTemplateLayer => _NotFoundIdleTemplateLayer[(int)Lang];
 
 		#endregion
 
@@ -245,7 +258,8 @@
 			"Specify separate animations for left and right."
 		};
 
-		public static string GestureLayerModuleEditor_UseDifferentAnimationProperty => _GestureLayerModuleEditor_UseDifferentAnimationProperty[(int)Lang];
+		public static string GestureLayerModuleEditor_UseDifferentAnimationProperty =>
+			_GestureLayerModuleEditor_UseDifferentAnimationProperty[(int)Lang];
 
 		#endregion
 
@@ -268,10 +282,11 @@
 			"よろしいですか?",
 			"Replace with standard settings.\n" +
 			"Current settings will be lost. \n" +
-			"Are you sure?" 
+			"Are you sure?"
 		};
 
-		public static string GestureLayerModuleEditor_SetDefault_WarningMessage => _GestureLayerModuleEditor_SetDefault_WarningMessage[(int)Lang];
+		public static string GestureLayerModuleEditor_SetDefault_WarningMessage =>
+			_GestureLayerModuleEditor_SetDefault_WarningMessage[(int)Lang];
 
 		#endregion
 
@@ -284,7 +299,8 @@
 			"Please re-import the asset."
 		};
 
-		public static string GestureLayerModuleEditor_NotFoundDefaultController => _GestureLayerModuleEditor_NotFoundDefaultController[(int)Lang];
+		public static string GestureLayerModuleEditor_NotFoundDefaultController =>
+			_GestureLayerModuleEditor_NotFoundDefaultController[(int)Lang];
 
 		#endregion
 
@@ -303,6 +319,18 @@
 
 		#endregion
 
+		#region GestureExpressionModuleEditor_UseUserDefinedIdleAnimation
+
+		private static readonly string[] _GestureExpressionModuleEditor_UseUserDefinedIdleAnimation = {
+			"Idleレイヤーを生成する。",
+			"Generate Idle layer."
+		};
+
+		public static string GestureExpressionModuleEditor_UseUserDefinedIdleAnimation =>
+			_GestureExpressionModuleEditor_UseUserDefinedIdleAnimation[(int)Lang];
+
+		#endregion
+
 		#region GestureExpressionModuleEditor_NotFoundDefaultController
 
 		private static readonly string[] _GestureExpressionModuleEditor_NotFoundDefaultController = {
@@ -312,7 +340,8 @@
 			"Please re-import the asset."
 		};
 
-		public static string GestureExpressionModuleEditor_NotFoundDefaultController => _GestureExpressionModuleEditor_NotFoundDefaultController[(int)Lang];
+		public static string GestureExpressionModuleEditor_NotFoundDefaultController =>
+			_GestureExpressionModuleEditor_NotFoundDefaultController[(int)Lang];
 
 		#endregion
 

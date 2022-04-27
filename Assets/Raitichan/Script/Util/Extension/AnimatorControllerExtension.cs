@@ -54,6 +54,7 @@ namespace Raitichan.Script.Util.Extension {
 		public static void AppendLayerAll(this AnimatorController dst, AnimatorController src) {
 			int dstLayerSize = dst.layers.Length;
 			StateMachineCloner[] cloners = new StateMachineCloner[src.layers.Length];
+			AnimatorControllerLayer[] clonedLayers = new AnimatorControllerLayer[src.layers.Length];
 			for (int i = 0; i < src.layers.Length; i++) {
 				AnimatorControllerLayer srcLayer = src.layers[i];
 				cloners[i] = new StateMachineCloner(srcLayer.stateMachine);
@@ -70,16 +71,17 @@ namespace Raitichan.Script.Util.Extension {
 					defaultWeight = srcLayer.defaultWeight,
 					syncedLayerAffectsTiming = srcLayer.syncedLayerAffectsTiming
 				};
-				
 
-				if (cloned.syncedLayerIndex != -1) {
-					// TODO: 後ろにあるレイヤーも参照できるのでその場合null
-					cloners[cloned.syncedLayerIndex].CloneSyncedLayer(src, i, cloned);
-					cloned.syncedLayerIndex += dstLayerSize;
-				}
-
+				clonedLayers[i] = cloned;
 				dst.AddLayer(cloned);
 			}
+
+			for (int i = 0; i < clonedLayers.Length; i++) {
+				AnimatorControllerLayer clonedLayer = clonedLayers[i];
+				if (clonedLayer.syncedLayerIndex == -1) continue;
+				cloners[clonedLayer.syncedLayerIndex].CloneSyncedLayer(src, i, clonedLayer);
+			}
+
 
 			ImmutableHashSet<string> dstUsedParameterNames = dst.parameters.Select(o => o.name).ToImmutableHashSet();
 			foreach (AnimatorControllerParameter srcParameter in src.parameters.Where(o =>
