@@ -1,23 +1,53 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Raitichan.Script.VRCAvatarBuilder.AnimatorControllerGenerator;
+using VRC.SDK3.Avatars.Components;
 using AnimLayerType = VRC.SDK3.Avatars.Components.VRCAvatarDescriptor.AnimLayerType;
 
 namespace Raitichan.Script.VRCAvatarBuilder.Context {
+	/// <summary>
+	/// ビルド実行時のコンテキスト
+	/// </summary>
+	[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+	[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
 	public class VRCAvatarBuilderContext {
+		/// <summary>
+		/// ビルダー
+		/// </summary>
 		public VRCAvatarBuilder Builder { get; set; }
 
-		public AnimatorControllerGenerators AnimatorControllerGenerators { get; set; }
+		/// <summary>
+		/// 複製されたアバター
+		/// </summary>
+		public VRCAvatarDescriptor Avatar { get; set; }
 
+		/// <summary>
+		/// ビルドバージョン
+		/// </summary>
+		public uint BuildVersion { get; set; }
 
-		public VRCAvatarBuilderContext(VRCAvatarBuilder builder) {
-			this.Builder = builder;
-			this.AnimatorControllerGenerators = new AnimatorControllerGenerators();
+		/// <summary>
+		/// 出力ディレクトリへのパス
+		/// </summary>
+		public string OutputPath { get; set; }
+
+		/// <summary>
+		/// レイヤージェネレーター
+		/// </summary>
+		public AnimatorControllerLayerGenerators AnimatorControllerLayerGenerators { get; set; }
+
+		public VRCAvatarBuilderContext() {
+			this.AnimatorControllerLayerGenerators = new AnimatorControllerLayerGenerators();
 		}
 	}
 
-	public class AnimatorControllerGenerators {
+	/// <summary>
+	/// それぞれのタイプのレイヤージェネレーターを保持したクラス。
+	/// </summary>
+	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+	public class AnimatorControllerLayerGenerators {
 		public List<IAnimatorControllerLayerGenerator> BaseLayerGenerators { get; set; }
 		public List<IAnimatorControllerLayerGenerator> AdditiveLayerGenerators { get; set; }
 		public List<IAnimatorControllerLayerGenerator> GestureLayerGenerators { get; set; }
@@ -28,7 +58,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Context {
 		public List<IAnimatorControllerLayerGenerator> IKPoseLayerGenerators { get; set; }
 
 		/// <summary>
-		/// 
+		/// 指定されたタイプのレイヤージェネレータの取得
 		/// </summary>
 		/// <param name="type"></param>
 		/// <exception cref="InvalidEnumArgumentException">指定されたタイプが無効な場合</exception>
@@ -92,7 +122,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Context {
 			}
 		}
 
-		public AnimatorControllerGenerators() {
+		public AnimatorControllerLayerGenerators() {
 			this.BaseLayerGenerators = new List<IAnimatorControllerLayerGenerator>();
 			this.AdditiveLayerGenerators = new List<IAnimatorControllerLayerGenerator>();
 			this.GestureLayerGenerators = new List<IAnimatorControllerLayerGenerator>();

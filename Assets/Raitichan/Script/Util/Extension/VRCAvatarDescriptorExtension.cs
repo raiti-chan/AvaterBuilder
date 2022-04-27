@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
+using AnimLayerType = VRC.SDK3.Avatars.Components.VRCAvatarDescriptor.AnimLayerType;
+using CustomAnimLayer = VRC.SDK3.Avatars.Components.VRCAvatarDescriptor.CustomAnimLayer;
 
 namespace Raitichan.Script.Util.Extension {
 	public static class VRCAvatarDescriptorExtension {
@@ -22,19 +24,19 @@ namespace Raitichan.Script.Util.Extension {
 		/// <returns>レイヤグループ</returns>
 		/// <exception cref="InvalidEnumArgumentException">指定されたタイプが無効な場合</exception>
 		// ReSharper disable once MemberCanBePrivate.Global
-		public static LayerGroupType GetLayerGroupType(this VRCAvatarDescriptor.AnimLayerType type) {
+		public static LayerGroupType GetLayerGroupType(this AnimLayerType type) {
 			switch (type) {
-				case VRCAvatarDescriptor.AnimLayerType.Base:
-				case VRCAvatarDescriptor.AnimLayerType.Additive:
-				case VRCAvatarDescriptor.AnimLayerType.Gesture:
-				case VRCAvatarDescriptor.AnimLayerType.Action:
-				case VRCAvatarDescriptor.AnimLayerType.FX:
+				case AnimLayerType.Base:
+				case AnimLayerType.Additive:
+				case AnimLayerType.Gesture:
+				case AnimLayerType.Action:
+				case AnimLayerType.FX:
 					return LayerGroupType.Base;
-				case VRCAvatarDescriptor.AnimLayerType.Sitting:
-				case VRCAvatarDescriptor.AnimLayerType.TPose:
-				case VRCAvatarDescriptor.AnimLayerType.IKPose:
+				case AnimLayerType.Sitting:
+				case AnimLayerType.TPose:
+				case AnimLayerType.IKPose:
 					return LayerGroupType.Special;
-				case VRCAvatarDescriptor.AnimLayerType.Deprecated0:
+				case AnimLayerType.Deprecated0:
 				default:
 					throw new InvalidEnumArgumentException(
 						$"Invalid Animation LayerType : {nameof(type)} = {type}");
@@ -51,8 +53,8 @@ namespace Raitichan.Script.Util.Extension {
 		/// <returns></returns>
 		/// <exception cref="InvalidEnumArgumentException">指定されたタイプが無効な場合</exception>
 		public static RuntimeAnimatorController GetLayer(this VRCAvatarDescriptor descriptor,
-			VRCAvatarDescriptor.AnimLayerType layerType) {
-			VRCAvatarDescriptor.CustomAnimLayer[] layers = layerType.GetLayerGroupType() == LayerGroupType.Base
+			AnimLayerType layerType) {
+			CustomAnimLayer[] layers = layerType.GetLayerGroupType() == LayerGroupType.Base
 				? descriptor.baseAnimationLayers
 				: descriptor.specialAnimationLayers;
 
@@ -63,12 +65,13 @@ namespace Raitichan.Script.Util.Extension {
 
 		/// <summary>
 		/// 指定されたタイプのレイヤーを設定します。
+		/// nullを設定した場合デフォルトに設定します。
 		/// </summary>
 		/// <param name="descriptor"></param>
 		/// <param name="type"></param>
 		/// <param name="controller"></param>
 		/// <exception cref="InvalidEnumArgumentException">指定されたタイプが無効な場合</exception>
-		public static void SetLayer(this VRCAvatarDescriptor descriptor, VRCAvatarDescriptor.AnimLayerType type,
+		public static void SetLayer(this VRCAvatarDescriptor descriptor, AnimLayerType type,
 			RuntimeAnimatorController controller) {
 			SerializedObject serializedObject = new SerializedObject(descriptor);
 			serializedObject.Update();
@@ -80,19 +83,16 @@ namespace Raitichan.Script.Util.Extension {
 
 			foreach (SerializedProperty alpElement in alProperty.GetEnumerable()) {
 				SerializedProperty typeProperty =
-					alpElement.FindPropertyRelative(nameof(VRCAvatarDescriptor.CustomAnimLayer.type));
+					alpElement.FindPropertyRelative(nameof(CustomAnimLayer.type));
 				if (typeProperty.enumValueIndex != (int)type) continue;
-				
+
 				SerializedProperty AcProperty =
-					alpElement.FindPropertyRelative(nameof(VRCAvatarDescriptor.CustomAnimLayer.animatorController));
-				SerializedProperty isEnabledProperty =
-					alpElement.FindPropertyRelative(nameof(VRCAvatarDescriptor.CustomAnimLayer.isEnabled));
+					alpElement.FindPropertyRelative(nameof(CustomAnimLayer.animatorController));
 				SerializedProperty isDefaultProperty =
-					alpElement.FindPropertyRelative(nameof(VRCAvatarDescriptor.CustomAnimLayer.isDefault));
-				
+					alpElement.FindPropertyRelative(nameof(CustomAnimLayer.isDefault));
+
 				AcProperty.objectReferenceValue = controller;
-				isEnabledProperty.boolValue = true;
-				isDefaultProperty.boolValue = false;
+				isDefaultProperty.boolValue = controller == null;
 			}
 
 			serializedObject.ApplyModifiedProperties();

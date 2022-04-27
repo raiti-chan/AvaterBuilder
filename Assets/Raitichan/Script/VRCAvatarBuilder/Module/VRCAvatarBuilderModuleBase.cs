@@ -2,6 +2,7 @@
 
 #if UNITY_EDITOR
 using Raitichan.Script.VRCAvatarBuilder.Context;
+using UnityEditor.Animations;
 #endif
 
 namespace Raitichan.Script.VRCAvatarBuilder.Module {

@@ -53,10 +53,10 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 
 		public override void Build(VRCAvatarBuilderContext context) {
 			List<IAnimatorControllerLayerGenerator> targetList =
-				context.AnimatorControllerGenerators[this._targetLayerType];
+				context.AnimatorControllerLayerGenerators[this._targetLayerType];
 			foreach (RuntimeAnimatorController runtimeAnimatorController in this._animatorControllers) {
 				if (runtimeAnimatorController is AnimatorController animatorController) {
-					targetList.Add(new SimpleAnimatorControllerLayerGenerator { Controller = animatorController });
+					targetList.Add(new SimpleLayerGenerator { SrcController = animatorController });
 				}
 			}
 		}

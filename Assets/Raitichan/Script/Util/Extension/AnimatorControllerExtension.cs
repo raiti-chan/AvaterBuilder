@@ -17,7 +17,7 @@ namespace Raitichan.Script.Util.Extension {
 		public static bool AppendLayer(this AnimatorController dst, AnimatorController src, int layerIndex) {
 			AnimatorControllerLayer srcLayer = src.layers[layerIndex];
 			if (srcLayer.syncedLayerIndex != -1) return false;
-			Util.StateMachineCloner cloner = new Util.StateMachineCloner(srcLayer.stateMachine);
+			StateMachineCloner cloner = new Util.StateMachineCloner(srcLayer.stateMachine);
 			AnimatorStateMachine stateMachine = cloner.CloneStateMachine();
 			cloner.SaveAsset(dst);
 			AnimatorControllerLayer cloned = new AnimatorControllerLayer {
@@ -53,10 +53,10 @@ namespace Raitichan.Script.Util.Extension {
 
 		public static void AppendLayerAll(this AnimatorController dst, AnimatorController src) {
 			int dstLayerSize = dst.layers.Length;
-			Util.StateMachineCloner[] cloners = new Util.StateMachineCloner[src.layers.Length];
+			StateMachineCloner[] cloners = new StateMachineCloner[src.layers.Length];
 			for (int i = 0; i < src.layers.Length; i++) {
 				AnimatorControllerLayer srcLayer = src.layers[i];
-				cloners[i] = new Util.StateMachineCloner(srcLayer.stateMachine);
+				cloners[i] = new StateMachineCloner(srcLayer.stateMachine);
 				AnimatorStateMachine stateMachine = cloners[i].CloneStateMachine();
 				cloners[i].SaveAsset(dst);
 

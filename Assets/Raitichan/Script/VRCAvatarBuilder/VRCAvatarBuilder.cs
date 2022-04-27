@@ -1,4 +1,5 @@
 ﻿using System;
+using Raitichan.Script.VRCAvatarBuilder.Module;
 using UnityEngine;
 using UnityEngine.Serialization;
 using VRC.SDK3.Avatars.Components;
@@ -14,9 +15,7 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 	/// アバタービルダーコンポーネント
 	/// </summary>
 	public class VRCAvatarBuilder : MonoBehaviour {
-		public const string OUTPUT_DIRECTORY = "/out";
-		public const string GENERATED_SUFFIX = "_Generated";
-
+#if UNITY_EDITOR
 		#region Language Parameter
 
 		[FormerlySerializedAs("_language")] [SerializeField]
@@ -38,7 +37,6 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		#region EmptyAnimatorController Parameter
 
-#if UNITY_EDITOR
 		[SerializeField] private AnimatorController _emptyAnimatorController;
 
 		public AnimatorController EmptyAnimatorController {
@@ -52,7 +50,6 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		}
 
 		public static string EmptyAnimatorControllerPropertyName => nameof(_emptyAnimatorController);
-#endif
 
 		#endregion
 
@@ -112,7 +109,6 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		#region UploadScene Parameter
 
-#if UNITY_EDITOR
 		[SerializeField] private SceneAsset _uploadScene;
 
 		public SceneAsset UploadScene {
@@ -127,10 +123,27 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		public static string UploadScenePropertyName => nameof(_uploadScene);
 
-#endif
-
 		#endregion
 
+		#region Modules Parameter
+
+		[SerializeField] private VRCAvatarBuilderModuleBase[] _modules;
+
+		public VRCAvatarBuilderModuleBase[] Modules {
+			get => this._modules;
+			set {
+				if (this._modules == value) return;
+				this.BeginUpdate();
+				this._modules = value;
+				this.Update();
+			}
+		}
+
+		public static string ModulesPropertyName => nameof(_modules);
+
+
+		#endregion
+		
 		#region BaseLayers Parameter
 
 		[SerializeField] private RuntimeAnimatorController[] _baseLayers;
@@ -273,9 +286,8 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		public static string FxIdleAAnimationPropertyName => nameof(_fxIdleAAnimation);
 
-
 		#endregion
-		
+
 		#region LeftExpressionAnimations Parameter
 
 		[SerializeField] private Motion[] _leftExpressionAnimations = new Motion[8];
@@ -335,29 +347,15 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		#region Private Method
 
 		private void BeginUpdate() {
-#if UNITY_EDITOR
 			Undo.RecordObject(this, "Change Property");
-#endif
 		}
 
 		private void Update() {
-#if UNITY_EDITOR
 			EditorUtility.SetDirty(this);
-#endif
 		}
 
 		#endregion
-	}
 
-
-	public enum GestureTypes {
-		Fist,
-		Open,
-		Point,
-		Peace,
-		RockNRoll,
-		Gun,
-		ThumbsUp,
-		Idle,
+#endif
 	}
 }
