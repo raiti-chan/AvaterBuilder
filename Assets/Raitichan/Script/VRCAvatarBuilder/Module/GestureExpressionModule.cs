@@ -1,16 +1,18 @@
-﻿using Raitichan.Script.Util.Enum;
-#if UNITY_EDITOR
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
+using Raitichan.Script.Util.Enum;
 using Raitichan.Script.VRCAvatarBuilder.AnimatorControllerGenerator;
-using UnityEngine;
-using UnityEditor;
 using Raitichan.Script.VRCAvatarBuilder.Context;
+using UnityEditor;
 using UnityEditor.Animations;
+using UnityEngine;
+#if UNITY_EDITOR
 #endif
 
 namespace Raitichan.Script.VRCAvatarBuilder.Module {
-	public class GestureLayerModule : VRCAvatarBuilderModuleBase {
+	/// <summary>
+	/// ジェスチャーによって切り替わる表情を追加するモジュール
+	/// </summary>
+	public class GestureExpressionModule : VRCAvatarBuilderModuleBase {
 #if UNITY_EDITOR
 
 		#region UseDifferentAnimation Parameter
@@ -33,9 +35,9 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 
 		#region LeftAnimation Parameter
 
-		[SerializeField] private AnimationClip[] _leftAnimation = new AnimationClip[8];
+		[SerializeField] private AnimationClip[] _leftAnimation = new AnimationClip[7];
 
-		public AnimationClip[] LeftAnimation {
+		public AnimationClip[] LeftGesture {
 			get => this._leftAnimation;
 			set {
 				if (this._leftAnimation == value) return;
@@ -51,7 +53,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 
 		#region RightAnimation Parameter
 
-		[SerializeField] private AnimationClip[] _rightAnimation = new AnimationClip[8];
+		[SerializeField] private AnimationClip[] _rightAnimation = new AnimationClip[7];
 
 		public AnimationClip[] RightGesture {
 			get => this._rightAnimation;
@@ -71,18 +73,18 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 
 		public override void Build(VRCAvatarBuilderContext context) {
 			AnimatorController controller =
-				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.DEFAULT_GESTURE_LAYER);
+				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.DEFAULT_FX_EXPRESSION_LAYER);
 
 			Dictionary<string, Motion> leftReplaceData = CreateReplaceData(this._leftAnimation);
 			ReplaceMotionByStateNameLayerGenerator generator = new ReplaceMotionByStateNameLayerGenerator {
 				SrcController = controller,
 				TempFileDir = context.OutputPath,
 				ReplaceData = {
-					[1] = leftReplaceData,
-					[2] = this.UseDifferentAnimation ? CreateReplaceData(this._rightAnimation) : leftReplaceData
+					[0] = leftReplaceData,
+					[1] = this.UseDifferentAnimation ? CreateReplaceData(this._rightAnimation) : leftReplaceData
 				}
 			};
-			context.AnimatorControllerLayerGenerators.GestureLayerGenerators.Add(generator);
+			context.AnimatorControllerLayerGenerators.FxLayerGenerators.Add(generator);
 		}
 
 		// ReSharper disable once SuggestBaseTypeForParameter
@@ -109,6 +111,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 		}
 
 		#endregion
+
 
 #endif
 	}

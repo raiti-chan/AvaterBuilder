@@ -289,5 +289,33 @@
 		#endregion
 
 		#endregion
+
+		#region GestureExpressionModuleEditor
+
+		#region GestureExpressionModuleEditor_Info
+
+		private static readonly string[] _GestureExpressionModuleEditor_Info = {
+			"このモジュールは標準的なジェスチャーで切り替わる表情のレイヤーを生成します。",
+			"This module generates a layer of facial expressions that switch with standard gestures."
+		};
+
+		public static string GestureExpressionModuleEditor_Info => _GestureExpressionModuleEditor_Info[(int)Lang];
+
+		#endregion
+
+		#region GestureExpressionModuleEditor_NotFoundDefaultController
+
+		private static readonly string[] _GestureExpressionModuleEditor_NotFoundDefaultController = {
+			"デフォルトの表情用のテンプレートレイヤーが見つかりません。\n" +
+			"アセットを再度インポートしてください。",
+			"Cannot find the template layer for the default expression.\n" +
+			"Please re-import the asset."
+		};
+
+		public static string GestureExpressionModuleEditor_NotFoundDefaultController => _GestureExpressionModuleEditor_NotFoundDefaultController[(int)Lang];
+
+		#endregion
+
+		#endregion
 	}
 }

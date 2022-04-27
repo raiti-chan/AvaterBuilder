@@ -1,12 +1,13 @@
-﻿using Raitichan.Script.Util.Enum;
+﻿using System;
+using Raitichan.Script.Util.Enum;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
 namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
-	[CustomEditor(typeof(GestureLayerModule))]
-	public class GestureLayerModuleEditor : UnityEditor.Editor {
-		private GestureLayerModule _target;
+	[CustomEditor(typeof(GestureExpressionModule))]
+	public class GestureExpressionModuleEditor : UnityEditor.Editor {
+		private GestureExpressionModule _target;
 
 		private SerializedProperty _useDifferentAnimationProperty;
 		private SerializedProperty _leftAnimationProperty;
@@ -15,25 +16,24 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 		private AnimatorController _controller;
 
 		private void OnEnable() {
-			this._target = this.target as GestureLayerModule;
+			this._target = this.target as GestureExpressionModule;
 
 			this._useDifferentAnimationProperty =
-				this.serializedObject.FindProperty(GestureLayerModule.UseDifferentAnimationPropertyName);
+				this.serializedObject.FindProperty(GestureExpressionModule.UseDifferentAnimationPropertyName);
 			this._leftAnimationProperty =
-				this.serializedObject.FindProperty(GestureLayerModule.LeftAnimationPropertyName);
+				this.serializedObject.FindProperty(GestureExpressionModule.LeftAnimationPropertyName);
 			this._rightAnimationProperty =
-				this.serializedObject.FindProperty(GestureLayerModule.RightAnimationPropertyName);
+				this.serializedObject.FindProperty(GestureExpressionModule.RightAnimationPropertyName);
 
 			this._controller =
-				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.DEFAULT_GESTURE_LAYER);
+				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.DEFAULT_FX_EXPRESSION_LAYER);
 		}
 
 		public override void OnInspectorGUI() {
-			
 			this.serializedObject.Update();
-			EditorGUILayout.HelpBox(Strings.GestureLayerModuleEditor_Info, MessageType.Info);
+			EditorGUILayout.HelpBox(Strings.GestureExpressionModuleEditor_Info, MessageType.Info);
 			if (this._controller == null) {
-				EditorGUILayout.HelpBox(Strings.GestureLayerModuleEditor_NotFoundDefaultController,
+				EditorGUILayout.HelpBox(Strings.GestureExpressionModuleEditor_NotFoundDefaultController,
 					MessageType.Error);
 			} else {
 				using (new EditorGUI.DisabledScope(true)) {
@@ -48,16 +48,8 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			InitArray(this._leftAnimationProperty);
 			InitArray(this._rightAnimationProperty);
 
-			GUILayout.Space(5);
-			if (GUILayout.Button(Strings.GestureLayerModuleEditor_SetDefault)) {
-				if (EditorUtility.DisplayDialog(Strings.Warning,
-					    Strings.GestureLayerModuleEditor_SetDefault_WarningMessage,
-					    Strings.OK, Strings.Cansel)) {
-					this.SetDefaultParameter();
-				}
-			}
-
 			// TODO: アバターについてくるアニメーターから自動設定する機能を作りたい
+			// TODO: Idle レイヤーの設定
 
 			GUILayout.Space(15);
 			if (this._target.UseDifferentAnimation) {
@@ -77,27 +69,15 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			this.serializedObject.ApplyModifiedProperties();
 		}
 
-		private void SetDefaultParameter() {
-			for (int i = 0; i < 8; i++) {
-				SerializedProperty left = this._leftAnimationProperty.GetArrayElementAtIndex(i);
-				SerializedProperty right = this._rightAnimationProperty.GetArrayElementAtIndex(i);
-				AnimationClip clip =
-					AssetDatabase.LoadAssetAtPath<AnimationClip>(ConstantPath.SDK_HANDS_ANIMATION_FILE_PATHS[i]);
-				left.objectReferenceValue = clip;
-				right.objectReferenceValue = clip;
-			}
-		}
-
-
 		private static void InitArray(SerializedProperty property) {
 			int size = property.arraySize;
-			if (size == 8) return;
-			while (size < 8) {
+			if (size == 7) return;
+			while (size < 7) {
 				property.InsertArrayElementAtIndex(size);
 				size++;
 			}
 
-			while (size > 8) {
+			while (size > 7) {
 				size--;
 				property.DeleteArrayElementAtIndex(size);
 			}
