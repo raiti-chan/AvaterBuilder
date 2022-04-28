@@ -15,7 +15,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 
 		#region TargetLayerType Parameter
 
-		[SerializeField] private AnimLayerType _targetLayerType;
+		[SerializeField] private AnimLayerType _targetLayerType = AnimLayerType.FX;
 
 		public AnimLayerType TargetLayerType {
 			get => this._targetLayerType;
@@ -52,7 +52,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 		#region ModuleMethod
 
 		public override void Build(VRCAvatarBuilderContext context) {
-			// TODO: 各コントローラーの一つ目のレイヤーのウェイトが0の場合の警告
 			List<IAnimatorControllerLayerGenerator> targetList =
 				context.AnimatorControllerLayerGenerators[this._targetLayerType];
 			foreach (RuntimeAnimatorController runtimeAnimatorController in this._animatorControllers) {

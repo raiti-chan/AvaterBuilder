@@ -66,6 +66,17 @@
 
 		#endregion
 
+		#region TargetLayer
+
+		private static readonly string[] _TargetLayer = {
+			"対象レイヤー",
+			"Target Layer"
+		};
+
+		public static string TargetLayer => _TargetLayer[(int)Lang];
+
+		#endregion
+		
 		#region WorkingDirectory
 
 		private static readonly string[] _WorkingDirectory = {
@@ -110,6 +121,17 @@
 
 		#endregion
 
+		#region AutoFix
+
+		private static readonly string[] _AutoFix = {
+			"自動修正",
+			"Auto Fix"
+		};
+
+		public static string AutoFix => _AutoFix[(int)Lang];
+
+		#endregion
+
 		#region LeftHand
 
 		private static readonly string[] _LeftHand = {
@@ -129,6 +151,17 @@
 		};
 
 		public static string RightHand => _RightHand[(int)Lang];
+
+		#endregion
+
+		#region AnimatorController
+
+		private static readonly string[] _AnimatorController = {
+			"コントローラー",
+			"Controller"
+		};
+
+		public static string AnimatorController => _AnimatorController[(int)Lang];
 
 		#endregion
 
@@ -342,6 +375,32 @@
 
 		public static string GestureExpressionModuleEditor_NotFoundDefaultController =>
 			_GestureExpressionModuleEditor_NotFoundDefaultController[(int)Lang];
+
+		#endregion
+
+		#endregion
+
+		#region AnimatorControllerMergerModuleEditor
+
+		#region AnimatorControllerMergerModuleEditor_Info
+
+		private static readonly string[] _AnimatorControllerMergerModuleEditor_Info = {
+			"このモジュールは指定されたレイヤーに複数のアニメーターを追加します。",
+			"This module adds multiple animators to a given layer."
+		};
+
+		public static string AnimatorControllerMergerModuleEditor_Info => _AnimatorControllerMergerModuleEditor_Info[(int)Lang];
+
+		#endregion
+
+		#region AnimatorControllerMergerModuleEditor_FirstLayersWeightIsZero
+
+		private static readonly string[] _AnimatorControllerMergerModuleEditor_FirstLayersWeightIsZero = {
+			"一番上のレイヤーのウェイトが0です。",
+			"The weight of the top layer is 0."
+		};
+
+		public static string AnimatorControllerMergerModuleEditor_FirstLayersWeightIsZero => _AnimatorControllerMergerModuleEditor_FirstLayersWeightIsZero[(int)Lang];
 
 		#endregion
 
