@@ -10,6 +10,7 @@ using System.Collections.Generic;
 #endif
 
 namespace Raitichan.Script.VRCAvatarBuilder.Module {
+	[AddComponentMenu("Raitichan/VRCAvatarBuilder/Module/AnimatorControllerMergerModule")]
 	public class AnimatorControllerMergerModule : VRCAvatarBuilderModuleBase {
 #if UNITY_EDITOR
 

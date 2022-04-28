@@ -1,4 +1,6 @@
-﻿#if UNITY_EDITOR
+﻿
+using UnityEngine;
+#if UNITY_EDITOR
 using Raitichan.Script.VRCAvatarBuilder.AnimatorControllerGenerator;
 using Raitichan.Script.VRCAvatarBuilder.Context;
 using UnityEditor;
@@ -7,6 +9,7 @@ using UnityEditor.Animations;
 #endif
 
 namespace Raitichan.Script.VRCAvatarBuilder.Module {
+	[AddComponentMenu("Raitichan/VRCAvatarBuilder/Module/DefaultActionLayerModule")]
 	public class DefaultActionLayerModule : VRCAvatarBuilderModuleBase {
 #if UNITY_EDITOR
 

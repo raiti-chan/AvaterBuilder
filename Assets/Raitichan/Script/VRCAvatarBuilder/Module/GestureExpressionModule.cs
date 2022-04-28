@@ -12,6 +12,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 	/// <summary>
 	/// ジェスチャーによって切り替わる表情を追加するモジュール
 	/// </summary>
+	[AddComponentMenu("Raitichan/VRCAvatarBuilder/Module/GestureExpressionModule")]
 	public class GestureExpressionModule : VRCAvatarBuilderModuleBase {
 #if UNITY_EDITOR
 

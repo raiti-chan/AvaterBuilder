@@ -10,6 +10,7 @@ using UnityEditor.Animations;
 #endif
 
 namespace Raitichan.Script.VRCAvatarBuilder.Module {
+	[AddComponentMenu("Raitichan/VRCAvatarBuilder/Module/GestureLayerModule")]
 	public class GestureLayerModule : VRCAvatarBuilderModuleBase {
 #if UNITY_EDITOR
 
