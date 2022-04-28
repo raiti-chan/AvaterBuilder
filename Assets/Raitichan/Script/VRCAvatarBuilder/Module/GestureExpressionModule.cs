@@ -154,20 +154,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 		}
 
 		#endregion
-
-		#region Private Method
-
-		private void BeginUpdate() {
-			Undo.RecordObject(this, "Change Property");
-		}
-
-		private void Update() {
-			EditorUtility.SetDirty(this);
-		}
-
-		#endregion
-
-
 #endif
 	}
 }

@@ -178,6 +178,35 @@
 
 		#endregion
 
+		#region NotFoundEmptyTemplateLayer
+
+		private static readonly string[] _NotFoundEmptyTemplateLayer = {
+			"空のテンプレートレイヤーが見つかりません\n" +
+			"アセットを再度インポートしてください。",
+			"Empty template layer not found.\n" +
+			"Please re-import the asset."
+		};
+
+		public static string NotFoundEmptyTemplateLayer => _NotFoundEmptyTemplateLayer[(int)Lang];
+
+		#endregion
+
+		#region EmptyTemplateLayer
+
+		private static readonly string[] _EmptyTemplateLayer = {
+			"空のテンプレートレイヤー",
+			"Empty template layer"
+		};
+
+		public static string EmptyTemplateLayer => _EmptyTemplateLayer[(int)Lang];
+
+		#endregion
+
+		#region VRCAvatarBuilderEditor
+
+		
+
+		#endregion
 
 		#region DefaultBaseLayerModuleEditor
 
