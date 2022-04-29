@@ -18,13 +18,15 @@ namespace Raitichan.Script.Util {
 		private struct ClonedTransitionInfo {
 			public readonly AnimatorTransitionBase Transition;
 			public readonly bool HasStateMachine;
+			public readonly bool IsExitTransition;
 			public readonly int DestinationInstanceId;
 
 			public ClonedTransitionInfo(AnimatorTransitionBase transition, bool hasStateMachine,
-				int destinationInstanceId) {
+				int destinationInstanceId, bool isExitTransition) {
 				Transition = transition;
 				HasStateMachine = hasStateMachine;
 				DestinationInstanceId = destinationInstanceId;
+				IsExitTransition = isExitTransition;
 			}
 		}
 

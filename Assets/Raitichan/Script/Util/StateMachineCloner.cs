@@ -1,4 +1,4 @@
-﻿// #define NO_HIDE_IN_HIERARCHY // これをつけるとhierarchyに表示されるようになる。
+﻿#define NO_HIDE_IN_HIERARCHY // これをつけるとhierarchyに表示されるようになる。
 
 #if UNITY_EDITOR
 using System;
@@ -322,7 +322,8 @@ namespace Raitichan.Script.Util {
 		/// </summary>
 		private void ReplaceTransitionDestination() {
 			if (!this.IsRootStateMachine) return;
-			foreach (ClonedTransitionInfo clonedStateTransition in this._clonedTransitions) {
+			foreach (ClonedTransitionInfo clonedStateTransition in this._clonedTransitions.Where(
+				         clonedStateTransition => !clonedStateTransition.IsExitTransition)) {
 				if (clonedStateTransition.HasStateMachine) {
 					clonedStateTransition.Transition.destinationStateMachine =
 						this._clonedStateMachines[clonedStateTransition.DestinationInstanceId].StateMachine;
@@ -547,10 +548,12 @@ namespace Raitichan.Script.Util {
 
 			if (src.destinationStateMachine != null) {
 				this.RegisterClonedStateTransition(new ClonedTransitionInfo(dst, true,
-					src.destinationStateMachine.GetInstanceID()));
+					src.destinationStateMachine.GetInstanceID(), false));
 			} else if (src.destinationState != null) {
 				this.RegisterClonedStateTransition(new ClonedTransitionInfo(dst, false,
-					src.destinationState.GetInstanceID()));
+					src.destinationState.GetInstanceID(), false));
+			} else {
+				this.RegisterClonedStateTransition(new ClonedTransitionInfo(dst, false, 0, true));
 			}
 		}
 
