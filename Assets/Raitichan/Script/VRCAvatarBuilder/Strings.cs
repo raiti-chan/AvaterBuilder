@@ -110,6 +110,17 @@
 
 		#endregion
 
+		#region Delete
+
+		private static readonly string[] _Delete = {
+			"削除",
+			"Delete"
+		};
+
+		public static string Delete => _Delete[(int)Lang];
+
+		#endregion
+
 		#region Build
 
 		private static readonly string[] _Build = {
@@ -129,6 +140,17 @@
 		};
 
 		public static string AutoFix => _AutoFix[(int)Lang];
+
+		#endregion
+
+		#region Module
+
+		private static readonly string[] _Module = {
+			"モジュール",
+			"Module"
+		};
+
+		public static string Module => _Module[(int)Lang];
 
 		#endregion
 
@@ -204,7 +226,16 @@
 
 		#region VRCAvatarBuilderEditor
 
-		
+		#region VRCAvatarBuilderEditor_AddModule
+
+		private static readonly string[] _VRCAvatarBuilderEditor_AddModule = {
+			"モジュールの追加",
+			"Add Module"
+		};
+
+		public static string VRCAvatarBuilderEditor_AddModule => _VRCAvatarBuilderEditor_AddModule[(int)Lang];
+
+		#endregion
 
 		#endregion
 

@@ -35,6 +35,8 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 
 		private AnimatorController _emptyController;
 
+		private Rect _addModuleWindow;
+
 		private SerializedProperty _languageProperty;
 		private SerializedProperty _avatarDescriptorProperty;
 		private SerializedProperty _workingDirectoryPathProperty;
@@ -46,7 +48,9 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			this._target = this.target as VRCAvatarBuilder;
 			if (this._target == null) return;
 
-			this._modules = this._target.gameObject.GetComponentsInChildren<VRCAvatarBuilderModuleBase>();
+			this.UpdateModuleList();
+			Undo.undoRedoPerformed += this.UpdateModuleList;
+
 			this._emptyController =
 				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.EMPTY_CONTROLLER_PATH);
 
@@ -59,6 +63,10 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			this._uploadSceneProperty = this.serializedObject.FindProperty(VRCAvatarBuilder.UploadScenePropertyName);
 			this._expressionMenuProperty =
 				this.serializedObject.FindProperty(VRCAvatarBuilder.ExpressionsMenuPropertyName);
+		}
+
+		private void OnDisable() {
+			Undo.undoRedoPerformed -= this.UpdateModuleList;
 		}
 
 		public override void OnInspectorGUI() {
@@ -84,20 +92,60 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			EditorGUILayout.PropertyField(this._expressionMenuProperty);
 
 			foreach (VRCAvatarBuilderModuleBase module in this._modules) {
-				module.IsOpenInAvatarBuilder = EditorGUILayout.Foldout(module.IsOpenInAvatarBuilder, module.name);
+				module.IsOpenInAvatarBuilder = RaitisEditorUtil.Foldout(module.IsOpenInAvatarBuilder, module.name,
+					OnModuleMenuClick, module, Strings.Delete);
 				if (!module.IsOpenInAvatarBuilder) continue;
 				UnityEditor.Editor editor = CreateEditor(module);
 				editor.OnInspectorGUI();
 			}
 
+			using (new GUILayout.HorizontalScope()) {
+				GUILayout.FlexibleSpace();
+				if (GUILayout.Button(Strings.VRCAvatarBuilderEditor_AddModule, GUILayout.Width(300),
+					    GUILayout.Height(30))) {
+					ModuleSearchWindow moduleSearchWindow = CreateInstance<ModuleSearchWindow>();
+					moduleSearchWindow.AvatarBuilder = this._target.gameObject;
+					moduleSearchWindow.Inspector = this;
+					moduleSearchWindow.ShowAsDropDown(this._addModuleWindow,
+						new Vector2(this._addModuleWindow.width, 300));
+				}
 
+				if (Event.current.type == EventType.Repaint) {
+					this._addModuleWindow = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
+				}
+
+				GUILayout.FlexibleSpace();
+			}
+
+			GUILayout.Space(20);
+			using (new GUILayout.HorizontalScope())
 			using (new EditorGUI.DisabledScope(!this.CanBuild())) {
-				if (GUILayout.Button(Strings.Build)) {
+				if (GUILayout.Button(Strings.Build, GUILayout.Height(40))) {
 					this.Build();
 				}
 			}
 
 			this.serializedObject.ApplyModifiedProperties();
+		}
+
+		public void UpdateModuleList() {
+			this._modules = this._target.gameObject.GetComponentsInChildren<VRCAvatarBuilderModuleBase>();
+		}
+
+		// ReSharper disable Unity.PerformanceAnalysis
+		private void OnModuleMenuClick(object data, int index) {
+			if (!(data is VRCAvatarBuilderModuleBase module)) return;
+			switch (index) {
+				case 0:
+					GameObject obj = module.gameObject;
+					Undo.DestroyObjectImmediate(module);
+					if (obj.GetComponents<VRCAvatarBuilderModuleBase>().Length <= 0) {
+						Undo.DestroyObjectImmediate(obj);
+					}
+
+					this.UpdateModuleList();
+					break;
+			}
 		}
 
 
