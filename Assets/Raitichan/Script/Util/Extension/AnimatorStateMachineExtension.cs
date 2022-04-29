@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Animations;
-
-#if UNITY_EDITOR
 
 namespace Raitichan.Script.Util.Extension {
 	public static class AnimatorStateMachineExtension {

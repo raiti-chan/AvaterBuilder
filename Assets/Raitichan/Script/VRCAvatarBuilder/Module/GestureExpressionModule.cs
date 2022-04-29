@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+#if UNITY_EDITOR
+using System.Collections.Generic;
 using Raitichan.Script.Util.Enum;
 using Raitichan.Script.VRCAvatarBuilder.AnimatorControllerGenerator;
 using Raitichan.Script.VRCAvatarBuilder.Context;
 using UnityEditor;
 using UnityEditor.Animations;
-using UnityEngine;
-#if UNITY_EDITOR
 #endif
 
 namespace Raitichan.Script.VRCAvatarBuilder.Module {

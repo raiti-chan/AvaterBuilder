@@ -43,7 +43,10 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		private SerializedProperty _scaleProperty;
 		private SerializedProperty _uploadSceneProperty;
 		private SerializedProperty _expressionMenuProperty;
-
+		
+		private SerializedProperty _basicSettingFoldoutProperty;
+		private SerializedProperty _moduleFoldoutProperty;
+		
 		private void OnEnable() {
 			this._target = this.target as VRCAvatarBuilder;
 			if (this._target == null) return;
@@ -63,6 +66,11 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			this._uploadSceneProperty = this.serializedObject.FindProperty(VRCAvatarBuilder.UploadScenePropertyName);
 			this._expressionMenuProperty =
 				this.serializedObject.FindProperty(VRCAvatarBuilder.ExpressionsMenuPropertyName);
+			
+			this._basicSettingFoldoutProperty =
+				this.serializedObject.FindProperty(VRCAvatarBuilder.BasicSettingFoldoutPropertyName);
+			this._moduleFoldoutProperty =
+				this.serializedObject.FindProperty(VRCAvatarBuilder.ModuleFoldoutPropertyName);
 		}
 
 		private void OnDisable() {
@@ -79,48 +87,63 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 
 			EditorGUILayout.PropertyField(this._languageProperty, new GUIContent(Strings.Language));
 			Strings.Lang = (Strings.Languages)this._languageProperty.intValue;
-
-			using (new EditorGUI.DisabledScope(true)) {
-				EditorGUILayout.ObjectField(Strings.EmptyTemplateLayer, this._emptyController,
-					typeof(AnimatorController), false);
-			}
-
+			
 			EditorGUILayout.PropertyField(this._avatarDescriptorProperty, new GUIContent(Strings.TargetAvatar));
-			EditorGUILayout.PropertyField(this._workingDirectoryPathProperty, new GUIContent(Strings.WorkingDirectory));
-			EditorGUILayout.PropertyField(this._scaleProperty, new GUIContent(Strings.AvatarScale));
-			EditorGUILayout.PropertyField(this._uploadSceneProperty, new GUIContent(Strings.UploadScene));
-			EditorGUILayout.PropertyField(this._expressionMenuProperty);
+			GUILayout.Space(8);
 
-			foreach (VRCAvatarBuilderModuleBase module in this._modules) {
-				module.IsOpenInAvatarBuilder = RaitisEditorUtil.Foldout(module.IsOpenInAvatarBuilder, module.name,
-					OnModuleMenuClick, module, Strings.Delete);
-				if (!module.IsOpenInAvatarBuilder) continue;
-				UnityEditor.Editor editor = CreateEditor(module);
-				editor.OnInspectorGUI();
+			this._basicSettingFoldoutProperty.boolValue =
+				RaitisEditorUtil.HeaderFoldout(this._target.BasicSettingFoldout, Strings.BasicSetting);
+			if (this._target.BasicSettingFoldout) {
+				GUILayout.Space(4);
+				using (new EditorGUI.DisabledScope(true)) {
+					EditorGUILayout.ObjectField(Strings.EmptyTemplateLayer, this._emptyController,
+						typeof(AnimatorController), false);
+				}
+				EditorGUILayout.PropertyField(this._workingDirectoryPathProperty, new GUIContent(Strings.WorkingDirectory));
+				EditorGUILayout.PropertyField(this._uploadSceneProperty, new GUIContent(Strings.UploadScene));
+				EditorGUILayout.PropertyField(this._scaleProperty, new GUIContent(Strings.AvatarScale));
+				EditorGUILayout.PropertyField(this._expressionMenuProperty);
 			}
-
-			using (new GUILayout.HorizontalScope()) {
-				GUILayout.FlexibleSpace();
-				if (GUILayout.Button(Strings.VRCAvatarBuilderEditor_AddModule, GUILayout.Width(300),
-					    GUILayout.Height(30))) {
-					ModuleSearchWindow moduleSearchWindow = CreateInstance<ModuleSearchWindow>();
-					moduleSearchWindow.AvatarBuilder = this._target.gameObject;
-					moduleSearchWindow.Inspector = this;
-					moduleSearchWindow.ShowAsDropDown(this._addModuleWindow,
-						new Vector2(this._addModuleWindow.width, 300));
+			
+			this._moduleFoldoutProperty.boolValue =
+				RaitisEditorUtil.HeaderFoldout(this._target.ModuleFoldout, Strings.Module);
+			if (this._target.ModuleFoldout) {
+				GUILayout.Space(2);
+				foreach (VRCAvatarBuilderModuleBase module in this._modules) {
+					module.IsOpenInAvatarBuilder = RaitisEditorUtil.Foldout(module.IsOpenInAvatarBuilder, module.name,
+						OnModuleMenuClick, module, Strings.Delete);
+					if (!module.IsOpenInAvatarBuilder) continue;
+					Undo.RecordObject(module.gameObject, "rename");
+					module.name = EditorGUILayout.TextField(module.name);
+					UnityEditor.Editor editor = CreateEditor(module);
+					editor.OnInspectorGUI();
 				}
 
-				if (Event.current.type == EventType.Repaint) {
-					this._addModuleWindow = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
-				}
+				using (new GUILayout.HorizontalScope()) {
+					GUILayout.FlexibleSpace();
+					if (GUILayout.Button(Strings.VRCAvatarBuilderEditor_AddModule, GUILayout.Width(300),
+						    GUILayout.Height(30))) {
+						ModuleSearchWindow moduleSearchWindow = CreateInstance<ModuleSearchWindow>();
+						moduleSearchWindow.AvatarBuilder = this._target.gameObject;
+						moduleSearchWindow.Inspector = this;
+						moduleSearchWindow.ShowAsDropDown(this._addModuleWindow,
+							new Vector2(this._addModuleWindow.width, 300));
+					}
 
-				GUILayout.FlexibleSpace();
+					if (Event.current.type == EventType.Repaint) {
+						this._addModuleWindow = GUIUtility.GUIToScreenRect(GUILayoutUtility.GetLastRect());
+					}
+
+					GUILayout.FlexibleSpace();
+				}
+				GUILayout.Space(4);
+				RaitisEditorUtil.Footer();
 			}
 
-			GUILayout.Space(20);
+			GUILayout.Space(5);
 			using (new GUILayout.HorizontalScope())
 			using (new EditorGUI.DisabledScope(!this.CanBuild())) {
-				if (GUILayout.Button(Strings.Build, GUILayout.Height(40))) {
+				if (GUILayout.Button(Strings.Build, GUILayout.Height(25))) {
 					this.Build();
 				}
 			}

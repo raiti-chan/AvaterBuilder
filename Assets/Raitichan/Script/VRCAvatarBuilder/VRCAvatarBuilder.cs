@@ -126,6 +126,44 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		#endregion
 
+		#region BasicSettingFoldout Parameter
+
+		[SerializeField] private bool _basicSettingFoldout;
+
+		public bool BasicSettingFoldout {
+			get => this._basicSettingFoldout;
+			set {
+				if (this._basicSettingFoldout == value) return;
+				this.BeginUpdate();
+				this._basicSettingFoldout = value;
+				this.Update();
+			}
+		}
+
+		public static string BasicSettingFoldoutPropertyName => nameof(_basicSettingFoldout);
+
+
+		#endregion
+
+		#region ModuleFoldout Parameter
+
+		[SerializeField] private bool _moduleFoldout;
+
+		public bool ModuleFoldout {
+			get => this._moduleFoldout;
+			set {
+				if (this._moduleFoldout == value) return;
+				this.BeginUpdate();
+				this._moduleFoldout = value;
+				this.Update();
+			}
+		}
+
+		public static string ModuleFoldoutPropertyName => nameof(_moduleFoldout);
+
+
+		#endregion
+
 		// TODO: 複合アニメーションの対応
 
 		#region Private Method

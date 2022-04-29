@@ -226,6 +226,17 @@
 
 		#region VRCAvatarBuilderEditor
 
+		#region BasicSetting
+
+		private static readonly string[] _BasicSetting = {
+			"基本設定",
+			"Basic Setting"
+		};
+
+		public static string BasicSetting => _BasicSetting[(int)Lang];
+
+		#endregion
+
 		#region VRCAvatarBuilderEditor_AddModule
 
 		private static readonly string[] _VRCAvatarBuilderEditor_AddModule = {

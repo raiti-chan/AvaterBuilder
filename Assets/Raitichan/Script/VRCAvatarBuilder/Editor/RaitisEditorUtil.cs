@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEditor;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 
 namespace Raitichan.Script.VRCAvatarBuilder.Editor {
@@ -13,15 +12,61 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			contentOffset = new Vector2(20, -2),
 		};
 
+		private static readonly GUIStyle BUTTON_MID = new GUIStyle("ButtonMid") {
+			font = new GUIStyle(EditorStyles.label).font,
+			fontSize = 12,
+			fontStyle = FontStyle.Bold
+		};
+
 		private static readonly GUIContent FOLDOUT_MENU_ICON = new GUIContent {
 			image = (Texture2D)EditorGUIUtility.Load("pane options")
 		};
+
+		public static bool HeaderFoldout(bool isOpen, string title) {
+			EditorGUILayout.BeginHorizontal();
+
+			Rect rect = GUILayoutUtility.GetRect(16, 19, BUTTON_MID);
+			rect.x = 0;
+			rect.width = EditorGUIUtility.currentViewWidth;
+			rect.height = 22;
+			GUI.Box(rect, title, BUTTON_MID);
+
+			Rect toggleRect = new Rect {
+				x = rect.x + 4,
+				y = rect.y + 2,
+				width = 16,
+				height = 16
+			};
+			
+			Event e = Event.current;
+			// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+			switch (e.type) {
+				case EventType.Repaint:
+					EditorStyles.foldout.Draw(toggleRect, false, false, isOpen, false);
+					break;
+				case EventType.MouseDown when rect.Contains(e.mousePosition):
+					isOpen = !isOpen;
+					e.Use();
+					break;
+			}
+			
+			
+			GUILayout.EndHorizontal();
+			return isOpen;
+		}
+
+		public static void Footer() {
+			Rect rect = GUILayoutUtility.GetRect(16, 2, BUTTON_MID);
+			rect.x = 0;
+			rect.width = EditorGUIUtility.currentViewWidth;
+			GUI.Box(rect, "", BUTTON_MID);
+		}
 
 		public static bool Foldout(bool isOpen, string title, Action<object, int> func = null, object data = null, params string[] menuContent) {
 			GUILayout.Space(2);
 			EditorGUILayout.BeginHorizontal();
 
-			Rect rect = GUILayoutUtility.GetRect(16, 26, FOLDOUT_STYLE);
+			Rect rect = GUILayoutUtility.GetRect(16, 20, FOLDOUT_STYLE);
 			GUI.Box(rect, title, FOLDOUT_STYLE);
 
 			Rect toggleRect = new Rect {
@@ -44,7 +89,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 				GUI.Box(buttonRect, FOLDOUT_MENU_ICON, GUIStyle.none);
 			}
 
-			// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 			// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
 			switch (e.type) {
 				case EventType.Repaint:

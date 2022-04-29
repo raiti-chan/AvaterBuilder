@@ -1,9 +1,8 @@
-﻿using Raitichan.Script.Util.Enum;
+﻿using UnityEngine;
+using Raitichan.Script.Util.Enum;
 #if UNITY_EDITOR
 using System.Collections.Generic;
-using System.IO;
 using Raitichan.Script.VRCAvatarBuilder.AnimatorControllerGenerator;
-using UnityEngine;
 using UnityEditor;
 using Raitichan.Script.VRCAvatarBuilder.Context;
 using UnityEditor.Animations;
