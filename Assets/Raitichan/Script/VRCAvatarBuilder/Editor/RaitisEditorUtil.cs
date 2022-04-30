@@ -22,6 +22,16 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			image = (Texture2D)EditorGUIUtility.Load("pane options")
 		};
 
+		public static bool HelpBoxWithButton(string message, MessageType type, string buttonText) {
+			EditorGUILayout.HelpBox(message, type);
+			Rect buttonRect = GUILayoutUtility.GetLastRect();
+			buttonRect.x += buttonRect.width - 110;
+			buttonRect.width = 100;
+			buttonRect.y += 5;
+			buttonRect.height -= 10;
+			return GUI.Button(buttonRect, buttonText);
+		}
+
 		public static bool HeaderFoldout(bool isOpen, string title) {
 			EditorGUILayout.BeginHorizontal();
 

@@ -17,7 +17,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 			get => this._isOpenInAvatarBuilder;
 			set {
 				if (this._isOpenInAvatarBuilder == value) return;
-				this.BeginUpdate();
 				this._isOpenInAvatarBuilder = value;
 				this.Update();
 			}

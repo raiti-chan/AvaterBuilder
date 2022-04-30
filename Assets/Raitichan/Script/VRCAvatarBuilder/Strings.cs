@@ -209,6 +209,61 @@
 
 		#endregion
 
+		#region BaseLayer
+
+		private static readonly string[] _BaseLayer = {
+			"ベース レイヤー",
+			"Base Layer"
+		};
+
+		public static string BaseLayer => _BaseLayer[(int)Lang];
+
+		#endregion
+
+		#region AdditiveLayer
+
+		private static readonly string[] _AdditiveLayer = {
+			"Additive レイヤー",
+			"Additive Layer"
+		};
+
+		public static string AdditiveLayer => _AdditiveLayer[(int)Lang];
+
+		#endregion
+
+		#region GestureLayer
+
+		private static readonly string[] _GestureLayer = {
+			"ジェスチャー レイヤー",
+			"Gesture Layer"
+		};
+
+		public static string GestureLayer => _GestureLayer[(int)Lang];
+
+		#endregion
+
+		#region ActionLayer
+
+		private static readonly string[] _ActionLayer = {
+			"アクション レイヤー",
+			"Action Layer"
+		};
+
+		public static string ActionLayer => _ActionLayer[(int)Lang];
+
+		#endregion
+
+		#region GestureExpressionLayer
+
+		private static readonly string[] _GestureExpressionLayer = {
+			"ジェスチャー表情 レイヤー",
+			"Gesture Expression Layer"
+		};
+
+		public static string GestureExpressionLayer => _GestureExpressionLayer[(int)Lang];
+
+		#endregion
+
 		#region NotFoundIdleTemplateLayer
 
 		private static readonly string[] _NotFoundIdleTemplateLayer = {
@@ -301,6 +356,41 @@
 		};
 
 		public static string VRCAvatarBuilderEditor_UploadSceneIsNotSet => _VRCAvatarBuilderEditor_UploadSceneIsNotSet[(int)Lang];
+
+		#endregion
+
+		#region VRCAvatarBuilderEditor_WorkingDirectorySetup
+
+		private static readonly string[] _VRCAvatarBuilderEditor_WorkingDirectorySetup = {
+			"作業ディレクトリ設定",
+			"Working directory setup"
+		};
+
+		public static string VRCAvatarBuilderEditor_WorkingDirectorySetup => _VRCAvatarBuilderEditor_WorkingDirectorySetup[(int)Lang];
+
+		#endregion
+
+		#region VRCAvatarBuilderEditor_SetUpTheWorkingDirectoryFirst
+
+		private static readonly string[] _VRCAvatarBuilderEditor_SetUpTheWorkingDirectoryFirst = {
+			"先に作業ディレクトリを設定してください。",
+			"Set up the working directory first."
+		};
+
+		public static string VRCAvatarBuilderEditor_SetUpTheWorkingDirectoryFirst => _VRCAvatarBuilderEditor_SetUpTheWorkingDirectoryFirst[(int)Lang];
+		
+		#endregion
+
+		#region VRCAvatarBuilderEditor_ModuleIsNotSet
+
+		private static readonly string[] _VRCAvatarBuilderEditor_ModuleIsNotSet = {
+			"モジュールが設定されていません。\n" +
+			"標準設定を使用しますか。",
+			"Module is not set.\n" +
+			"Do you want to use the standard settings?"
+		};
+
+		public static string VRCAvatarBuilderEditor_ModuleIsNotSet => _VRCAvatarBuilderEditor_ModuleIsNotSet[(int)Lang];
 
 		#endregion
 		

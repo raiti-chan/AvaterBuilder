@@ -86,7 +86,8 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			EditorGUILayout.PropertyField(this._avatarDescriptorProperty, new GUIContent(Strings.TargetAvatar));
 			EditorGUILayout.PropertyField(this._scaleProperty, new GUIContent(Strings.AvatarScale));
 			GUILayout.Space(8);
-			this.DrawInitError();
+			bool hasError = this.DrawInitError();
+			this.DrawWarning(hasError);
 
 			this._basicSettingFoldoutProperty.boolValue =
 				RaitisEditorUtil.HeaderFoldout(this._target.BasicSettingFoldout, Strings.BasicSetting);
@@ -112,35 +113,31 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		}
 
 		[SuppressMessage("ReSharper", "InvertIf")]
-		private void DrawInitError() {
+		private bool DrawInitError() {
+			bool hasError = false;
 			if (this._target.AvatarDescriptor == null) {
+				hasError = true;
 				EditorGUILayout.HelpBox(Strings.VRCAvatarBuilderEditor_AvatarIsNotSet, MessageType.Error);
 			}
 
 			if (string.IsNullOrEmpty(this._target.WorkingDirectoryPath)) {
-				EditorGUILayout.HelpBox(Strings.VRCAvatarBuilderEditor_WorkingDirectoryIsNotSet, MessageType.Error);
-				Rect buttonRect = GUILayoutUtility.GetLastRect();
-				buttonRect.x += buttonRect.width - 110;
-				buttonRect.width = 100;
-				buttonRect.y += 5;
-				buttonRect.height -= 10;
-				if (GUI.Button(buttonRect, Strings.Setting)) {
+				hasError = true;
+				if (RaitisEditorUtil.HelpBoxWithButton(Strings.VRCAvatarBuilderEditor_WorkingDirectoryIsNotSet,
+					    MessageType.Error, Strings.Setting)) {
 					string defaultPath = AssetPathUtil.GetFullPath(ConstantPath.ASSET_DIR_PATH);
-					string path = EditorUtility.OpenFolderPanel("作業ディレクトリ設定", defaultPath, "");
+					string path = EditorUtility.OpenFolderPanel(Strings.VRCAvatarBuilderEditor_WorkingDirectorySetup,
+						defaultPath, "");
 					this._workingDirectoryPathProperty.stringValue = AssetPathUtil.GetAssetsPath(path);
 				}
 			}
 
 			if (this._target.UploadScene == null) {
-				EditorGUILayout.HelpBox(Strings.VRCAvatarBuilderEditor_UploadSceneIsNotSet, MessageType.Error);
-				Rect buttonRect = GUILayoutUtility.GetLastRect();
-				buttonRect.x += buttonRect.width - 110;
-				buttonRect.width = 100;
-				buttonRect.y += 5;
-				buttonRect.height -= 10;
-				if (GUI.Button(buttonRect, Strings.AutoSetting)) {
+				hasError = true;
+				if (RaitisEditorUtil.HelpBoxWithButton(Strings.VRCAvatarBuilderEditor_UploadSceneIsNotSet,
+					    MessageType.Error, Strings.AutoSetting)) {
 					if (string.IsNullOrEmpty(this._target.WorkingDirectoryPath)) {
-						EditorUtility.DisplayDialog(Strings.Warning, "先に作業ディレクトリを設定してください。", Strings.OK);
+						EditorUtility.DisplayDialog(Strings.Warning,
+							Strings.VRCAvatarBuilderEditor_SetUpTheWorkingDirectoryFirst, Strings.OK);
 					} else {
 						string sceneDirectoryPath = this._target.WorkingDirectoryPath + ConstantPath.SCENE_DIRECTORY;
 						string uploadScenePath = sceneDirectoryPath + AssetPathUtil.ReplaceInvalidFileNameChars(
@@ -151,7 +148,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 						if (sceneAsset != null) {
 							// 存在したら設定して終了
 							this._uploadSceneProperty.objectReferenceValue = sceneAsset;
-							return;
+							return true;
 						}
 
 						string sceneDirectoryFullPath = AssetPathUtil.GetFullPath(sceneDirectoryPath);
@@ -168,6 +165,41 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 						this._uploadSceneProperty.objectReferenceValue =
 							AssetDatabase.LoadAssetAtPath<SceneAsset>(uploadScenePath);
 					}
+				}
+			}
+
+			return hasError;
+		}
+
+		[SuppressMessage("ReSharper", "InvertIf")]
+		private void DrawWarning(bool hasError) {
+			if (hasError) return;
+			if (this._modules.Length <= 0) {
+				if (RaitisEditorUtil.HelpBoxWithButton(Strings.VRCAvatarBuilderEditor_ModuleIsNotSet,
+					    MessageType.Warning, Strings.Setting)) {
+					Transform parent = this._target.gameObject.transform;
+					GameObject[] generateObject = new[] {
+						new GameObject(Strings.BaseLayer, typeof(DefaultBaseLayerModule)) {
+							transform = { parent = parent}
+						},
+						new GameObject(Strings.AdditiveLayer, typeof(DefaultAdditiveLayerModule)) {
+							transform = { parent = parent}
+						},
+						new GameObject(Strings.GestureLayer, typeof(GestureLayerModule)) {
+							transform = { parent = parent}
+						},
+						new GameObject(Strings.ActionLayer, typeof(DefaultActionLayerModule)) {
+							transform = { parent = parent}
+						},
+						new GameObject(Strings.GestureExpressionLayer, typeof(GestureExpressionModule)) {
+							transform = { parent = parent}
+						}
+					};
+					foreach (GameObject gameObject in generateObject) {
+						Undo.RegisterCreatedObjectUndo(gameObject, "Standard Setting");
+					}
+					// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
+					this.UpdateModuleList();
 				}
 			}
 		}
@@ -188,7 +220,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		private void DrawModules() {
 			GUILayout.Space(2);
 			foreach (VRCAvatarBuilderModuleBase module in this._modules) {
-				module.IsOpenInAvatarBuilder = RaitisEditorUtil.Foldout(module.IsOpenInAvatarBuilder, module.name,
+				module.IsOpenInAvatarBuilder = RaitisEditorUtil.Foldout(module.IsOpenInAvatarBuilder, $"{module.name}    ({module.GetType().Name})",
 					OnModuleMenuClick, module, Strings.Delete);
 				if (!module.IsOpenInAvatarBuilder) continue;
 				Undo.RecordObject(module.gameObject, "rename");
