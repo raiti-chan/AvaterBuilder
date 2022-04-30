@@ -165,6 +165,17 @@
 
 		#endregion
 
+		#region GoToObject
+
+		private static readonly string[] _GoToObject = {
+			"オブジェクトへ",
+			"Go to Object"
+		};
+
+		public static string GoToObject => _GoToObject[(int)Lang];
+
+		#endregion
+
 		#region Module
 
 		private static readonly string[] _Module = {

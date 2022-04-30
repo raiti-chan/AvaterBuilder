@@ -180,24 +180,25 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 					Transform parent = this._target.gameObject.transform;
 					GameObject[] generateObject = new[] {
 						new GameObject(Strings.BaseLayer, typeof(DefaultBaseLayerModule)) {
-							transform = { parent = parent}
+							transform = { parent = parent }
 						},
 						new GameObject(Strings.AdditiveLayer, typeof(DefaultAdditiveLayerModule)) {
-							transform = { parent = parent}
+							transform = { parent = parent }
 						},
 						new GameObject(Strings.GestureLayer, typeof(GestureLayerModule)) {
-							transform = { parent = parent}
+							transform = { parent = parent }
 						},
 						new GameObject(Strings.ActionLayer, typeof(DefaultActionLayerModule)) {
-							transform = { parent = parent}
+							transform = { parent = parent }
 						},
 						new GameObject(Strings.GestureExpressionLayer, typeof(GestureExpressionModule)) {
-							transform = { parent = parent}
+							transform = { parent = parent }
 						}
 					};
 					foreach (GameObject gameObject in generateObject) {
 						Undo.RegisterCreatedObjectUndo(gameObject, "Standard Setting");
 					}
+
 					// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 					this.UpdateModuleList();
 				}
@@ -220,8 +221,11 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		private void DrawModules() {
 			GUILayout.Space(2);
 			foreach (VRCAvatarBuilderModuleBase module in this._modules) {
-				module.IsOpenInAvatarBuilder = RaitisEditorUtil.Foldout(module.IsOpenInAvatarBuilder, $"{module.name}    ({module.GetType().Name})",
-					OnModuleMenuClick, module, Strings.Delete);
+				module.IsOpenInAvatarBuilder = RaitisEditorUtil.Foldout(
+					module.IsOpenInAvatarBuilder,
+					$"{module.name}    ({module.GetType().Name})",
+					OnModuleMenuClick, module, Strings.GoToObject, Strings.Delete);
+				
 				if (!module.IsOpenInAvatarBuilder) continue;
 				Undo.RecordObject(module.gameObject, "rename");
 				module.name = EditorGUILayout.TextField(module.name);
@@ -257,6 +261,9 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			if (!(data is VRCAvatarBuilderModuleBase module)) return;
 			switch (index) {
 				case 0:
+					Selection.activeObject = module;
+					break;
+				case 1:
 					GameObject obj = module.gameObject;
 					Undo.DestroyObjectImmediate(module);
 					if (obj.GetComponents<VRCAvatarBuilderModuleBase>().Length <= 0) {
