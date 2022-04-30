@@ -133,7 +133,6 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 			get => this._basicSettingFoldout;
 			set {
 				if (this._basicSettingFoldout == value) return;
-				this.BeginUpdate();
 				this._basicSettingFoldout = value;
 				this.Update();
 			}
@@ -151,7 +150,6 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 			get => this._moduleFoldout;
 			set {
 				if (this._moduleFoldout == value) return;
-				this.BeginUpdate();
 				this._moduleFoldout = value;
 				this.Update();
 			}

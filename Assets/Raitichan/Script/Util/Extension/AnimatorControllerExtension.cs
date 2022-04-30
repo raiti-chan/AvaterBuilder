@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using UnityEditor.Animations;
@@ -95,6 +96,10 @@ namespace Raitichan.Script.Util.Extension {
 				};
 				dst.AddParameter(clonedParameter);
 			}
+		}
+
+		public static IEnumerable<AnimatorTransitionBase> GetAllTransitionBase(this AnimatorController controller) {
+			return controller.layers.SelectMany(layer => layer.stateMachine.GetAllTransitionBases());
 		}
 	}
 }

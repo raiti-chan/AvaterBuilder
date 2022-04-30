@@ -75,8 +75,8 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		public static bool Foldout(bool isOpen, string title, Action<object, int> func = null, object data = null, params string[] menuContent) {
 			GUILayout.Space(2);
 			EditorGUILayout.BeginHorizontal();
-
 			Rect rect = GUILayoutUtility.GetRect(16, 20, FOLDOUT_STYLE);
+			rect = EditorGUI.IndentedRect(rect);
 			GUI.Box(rect, title, FOLDOUT_STYLE);
 
 			Rect toggleRect = new Rect {

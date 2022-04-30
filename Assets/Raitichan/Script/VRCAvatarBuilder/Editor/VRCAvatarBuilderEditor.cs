@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Raitichan.Script.Util;
 using UnityEditor;
@@ -22,6 +23,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		private VRCAvatarBuilder _target;
 
 		private VRCAvatarBuilderModuleBase[] _modules;
+		private UnityEditor.Editor[] _moduleEditors;
 
 		private AnimatorController _emptyController;
 
@@ -34,11 +36,9 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		private SerializedProperty _uploadSceneProperty;
 		private SerializedProperty _expressionMenuProperty;
 
-		private SerializedProperty _basicSettingFoldoutProperty;
-		private SerializedProperty _moduleFoldoutProperty;
-
 		public void UpdateModuleList() {
 			this._modules = this._target.gameObject.GetComponentsInChildren<VRCAvatarBuilderModuleBase>();
+			this._moduleEditors = this._modules.Select(module => CreateEditor(module)).ToArray();
 		}
 
 
@@ -61,11 +61,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			this._uploadSceneProperty = this.serializedObject.FindProperty(VRCAvatarBuilder.UploadScenePropertyName);
 			this._expressionMenuProperty =
 				this.serializedObject.FindProperty(VRCAvatarBuilder.ExpressionsMenuPropertyName);
-
-			this._basicSettingFoldoutProperty =
-				this.serializedObject.FindProperty(VRCAvatarBuilder.BasicSettingFoldoutPropertyName);
-			this._moduleFoldoutProperty =
-				this.serializedObject.FindProperty(VRCAvatarBuilder.ModuleFoldoutPropertyName);
 		}
 
 		private void OnDisable() {
@@ -89,13 +84,13 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			bool hasError = this.DrawInitError();
 			this.DrawWarning(hasError);
 
-			this._basicSettingFoldoutProperty.boolValue =
+			this._target.BasicSettingFoldout =
 				RaitisEditorUtil.HeaderFoldout(this._target.BasicSettingFoldout, Strings.BasicSetting);
 			if (this._target.BasicSettingFoldout) {
 				this.DrawBasicSetting();
 			}
 
-			this._moduleFoldoutProperty.boolValue =
+			this._target.ModuleFoldout =
 				RaitisEditorUtil.HeaderFoldout(this._target.ModuleFoldout, Strings.Module);
 			if (this._target.ModuleFoldout) {
 				this.DrawModules();
@@ -171,6 +166,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			return hasError;
 		}
 
+		// ReSharper disable Unity.PerformanceAnalysis
 		[SuppressMessage("ReSharper", "InvertIf")]
 		private void DrawWarning(bool hasError) {
 			if (hasError) return;
@@ -199,7 +195,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 						Undo.RegisterCreatedObjectUndo(gameObject, "Standard Setting");
 					}
 
-					// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 					this.UpdateModuleList();
 				}
 			}
@@ -217,20 +212,20 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			EditorGUILayout.PropertyField(this._uploadSceneProperty, new GUIContent(Strings.UploadScene));
 			EditorGUILayout.PropertyField(this._expressionMenuProperty);
 		}
-
 		private void DrawModules() {
 			GUILayout.Space(2);
-			foreach (VRCAvatarBuilderModuleBase module in this._modules) {
+			for (int i = 0; i < this._modules.Length; i++) {
+				VRCAvatarBuilderModuleBase module = this._modules[i];
+				EditorGUI.indentLevel--;
 				module.IsOpenInAvatarBuilder = RaitisEditorUtil.Foldout(
 					module.IsOpenInAvatarBuilder,
 					$"{module.name}    ({module.GetType().Name})",
 					OnModuleMenuClick, module, Strings.GoToObject, Strings.Delete);
-				
+				EditorGUI.indentLevel++;
 				if (!module.IsOpenInAvatarBuilder) continue;
 				Undo.RecordObject(module.gameObject, "rename");
 				module.name = EditorGUILayout.TextField(module.name);
-				UnityEditor.Editor editor = CreateEditor(module);
-				editor.OnInspectorGUI();
+				this._moduleEditors[i].OnInspectorGUI();
 			}
 
 			using (new GUILayout.HorizontalScope()) {

@@ -55,6 +55,17 @@
 
 		#endregion
 
+		#region Error
+
+		private static readonly string[] _Error = {
+			"エラー",
+			"Error"
+		};
+
+		public static string Error => _Error[(int)Lang];
+
+		#endregion
+
 		#region TargetAvatar
 
 		private static readonly string[] _TargetAvatar = {
@@ -129,6 +140,17 @@
 		};
 
 		public static string Build => _Build[(int)Lang];
+
+		#endregion
+
+		#region Utility
+
+		private static readonly string[] _Utility = {
+			"ユーティリティ",
+			"Utility"
+		};
+
+		public static string Utility => _Utility[(int)Lang];
 
 		#endregion
 
@@ -566,6 +588,19 @@
 
 		#endregion
 
+		#region GestureLayerModuleEditor_NotSupportType
+
+		private static readonly string[] _GestureLayerModuleEditor_NotSupportType = {
+			"この形式のアニメーターはサポートしていません。" +
+			"AnimatorController か AnimatorOverrideControllerを使用してください。",
+			"This type is not supported by the animator." +
+			"Use AnimatorController or AnimatorOverrideController."
+		};
+
+		public static string GestureLayerModuleEditor_NotSupportType => _GestureLayerModuleEditor_NotSupportType[(int)Lang];
+
+		#endregion
+		
 		#endregion
 
 		#region GestureExpressionModuleEditor
