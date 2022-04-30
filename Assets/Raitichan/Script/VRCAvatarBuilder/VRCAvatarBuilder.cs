@@ -1,5 +1,4 @@
 ﻿using System;
-using Raitichan.Script.VRCAvatarBuilder.Module;
 using UnityEngine;
 using UnityEngine.Serialization;
 using VRC.SDK3.Avatars.Components;
@@ -7,7 +6,6 @@ using VRC.SDK3.Avatars.ScriptableObjects;
 
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEditor.Animations;
 #endif
 
 namespace Raitichan.Script.VRCAvatarBuilder {
@@ -17,6 +15,7 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 	[AddComponentMenu("Raitichan/VRCAvatarBuilder/VRCAvatarBuilder")]
 	public class VRCAvatarBuilder : MonoBehaviour {
 #if UNITY_EDITOR
+
 		#region Language Parameter
 
 		[FormerlySerializedAs("_language")] [SerializeField]
@@ -142,7 +141,6 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 
 		public static string BasicSettingFoldoutPropertyName => nameof(_basicSettingFoldout);
 
-
 		#endregion
 
 		#region ModuleFoldout Parameter
@@ -160,7 +158,6 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		}
 
 		public static string ModuleFoldoutPropertyName => nameof(_moduleFoldout);
-
 
 		#endregion
 

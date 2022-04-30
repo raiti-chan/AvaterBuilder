@@ -76,7 +76,7 @@
 		public static string TargetLayer => _TargetLayer[(int)Lang];
 
 		#endregion
-		
+
 		#region WorkingDirectory
 
 		private static readonly string[] _WorkingDirectory = {
@@ -140,6 +140,28 @@
 		};
 
 		public static string AutoFix => _AutoFix[(int)Lang];
+
+		#endregion
+
+		#region Setting
+
+		private static readonly string[] _Setting = {
+			"設定",
+			"Setting"
+		};
+
+		public static string Setting => _Setting[(int)Lang];
+
+		#endregion
+
+		#region AutoSetting
+
+		private static readonly string[] _AutoSetting = {
+			"自動設定",
+			"Auto Setting"
+		};
+
+		public static string AutoSetting => _AutoSetting[(int)Lang];
 
 		#endregion
 
@@ -248,8 +270,43 @@
 
 		#endregion
 
+		#region VRCAvatarBuilderEditor_AvatarIsNotSet
+
+		private static readonly string[] _VRCAvatarBuilderEditor_AvatarIsNotSet = {
+			"アバターが設定されていません。",
+			"Avatar is not set."
+		};
+
+		public static string VRCAvatarBuilderEditor_AvatarIsNotSet => _VRCAvatarBuilderEditor_AvatarIsNotSet[(int)Lang];
+
 		#endregion
 
+		#region VRCAvatarBuilderEditor_WorkingDirectoryIsNotSet
+
+		private static readonly string[] _VRCAvatarBuilderEditor_WorkingDirectoryIsNotSet = {
+			"作業ディレクトリが設定されていません。",
+			"Working directory is not set."
+		};
+
+		public static string VRCAvatarBuilderEditor_WorkingDirectoryIsNotSet =>
+			_VRCAvatarBuilderEditor_WorkingDirectoryIsNotSet[(int)Lang];
+
+		#endregion
+
+		#region VRCAvatarBuilderEditor_UploadSceneIsNotSet
+
+		private static readonly string[] _VRCAvatarBuilderEditor_UploadSceneIsNotSet = {
+			"アップロード用シーンが設定されていません。",
+			"Scene is not set for upload."
+		};
+
+		public static string VRCAvatarBuilderEditor_UploadSceneIsNotSet => _VRCAvatarBuilderEditor_UploadSceneIsNotSet[(int)Lang];
+
+		#endregion
+		
+		#endregion
+
+		
 		#region DefaultBaseLayerModuleEditor
 
 		#region DefaultBaseLayerModuleEditor_Info
@@ -460,7 +517,8 @@
 			"This module adds multiple animators to a given layer."
 		};
 
-		public static string AnimatorControllerMergerModuleEditor_Info => _AnimatorControllerMergerModuleEditor_Info[(int)Lang];
+		public static string AnimatorControllerMergerModuleEditor_Info =>
+			_AnimatorControllerMergerModuleEditor_Info[(int)Lang];
 
 		#endregion
 
@@ -471,7 +529,8 @@
 			"The weight of the top layer is 0."
 		};
 
-		public static string AnimatorControllerMergerModuleEditor_FirstLayersWeightIsZero => _AnimatorControllerMergerModuleEditor_FirstLayersWeightIsZero[(int)Lang];
+		public static string AnimatorControllerMergerModuleEditor_FirstLayersWeightIsZero =>
+			_AnimatorControllerMergerModuleEditor_FirstLayersWeightIsZero[(int)Lang];
 
 		#endregion
 

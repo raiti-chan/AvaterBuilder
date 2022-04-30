@@ -3,9 +3,11 @@
 namespace Raitichan.Script.VRCAvatarBuilder {
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 	public static class ConstantPath {
-		public const string OUTPUT_DIRECTORY = "/out";
+		public const string OUTPUT_DIRECTORY = "/Out";
+		public const string SCENE_DIRECTORY = "/Scene";
 		public const string GENERATED_SUFFIX = "_Generated";
-		public const string RESOURCE_DIR_PATH = "Assets/Raitichan/Script/VRCAvatarBuilder/resource";
+		public const string ASSET_DIR_PATH = "Assets";
+		public const string RESOURCE_DIR_PATH = ASSET_DIR_PATH + "/Raitichan/Script/VRCAvatarBuilder/resource";
 		public const string ANIMATION_DIR_PATH = RESOURCE_DIR_PATH + "/Animation";
 		public const string CONTROLLER_DIR_PATH = ANIMATION_DIR_PATH + "/Controller";
 
