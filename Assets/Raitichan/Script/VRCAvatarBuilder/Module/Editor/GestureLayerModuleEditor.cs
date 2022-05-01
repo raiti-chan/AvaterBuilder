@@ -52,7 +52,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 
 			this._target.UtilityHoldout = RaitisEditorUtil.Foldout(this._target.UtilityHoldout, Strings.Utility);
 			if (this._target.UtilityHoldout) {
-				// TODO: アバターについてくるアニメーターから自動設定する機能を作りたい
 				GUILayout.Space(5);
 				EditorGUI.indentLevel++;
 				this.DrawAvatarsDefaultGestureLayer();
@@ -164,7 +163,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 					this.SetupWithAnimatorController(animatorController);
 					break;
 				case AnimatorOverrideController overrideController:
-					// TODO: OverrideController の対応。
 					this.SetupWithOverrideController(overrideController);
 					break;
 				default:

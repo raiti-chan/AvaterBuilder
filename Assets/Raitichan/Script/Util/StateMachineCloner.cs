@@ -1,4 +1,4 @@
-﻿#define NO_HIDE_IN_HIERARCHY // これをつけるとhierarchyに表示されるようになる。
+﻿// #define NO_HIDE_IN_HIERARCHY // これをつけるとhierarchyに表示されるようになる。
 
 #if UNITY_EDITOR
 using System;

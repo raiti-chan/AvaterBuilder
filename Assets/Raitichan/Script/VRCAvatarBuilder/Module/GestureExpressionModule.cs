@@ -106,6 +106,24 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 
 		#endregion
 
+		#region UtilityHoldout Parameter
+
+		[SerializeField] private bool _utilityHoldout;
+
+		public bool UtilityHoldout {
+			get => this._utilityHoldout;
+			set {
+				if (this._utilityHoldout == value) return;
+				this._utilityHoldout = value;
+				this.Update();
+			}
+		}
+
+		public static string UtilityHoldoutPropertyName => nameof(_utilityHoldout);
+
+
+		#endregion
+		
 		#region ModuleMethod
 
 		public override void Build(VRCAvatarBuilderContext context) {
