@@ -209,6 +209,17 @@
 
 		#endregion
 
+		#region AddModule
+
+		private static readonly string[] _AddModule = {
+			"モジュールの追加",
+			"Add Module"
+		};
+
+		public static string AddModule => _AddModule[(int)Lang];
+
+		#endregion
+
 		#region LeftHand
 
 		private static readonly string[] _LeftHand = {
@@ -336,25 +347,14 @@
 
 		#region VRCAvatarBuilderEditor
 
-		#region BasicSetting
+		#region VRCAvatarBuilderEditor_BasicSetting
 
-		private static readonly string[] _BasicSetting = {
+		private static readonly string[] _VRCAvatarBuilderEditor_BasicSetting = {
 			"基本設定",
 			"Basic Setting"
 		};
 
-		public static string BasicSetting => _BasicSetting[(int)Lang];
-
-		#endregion
-
-		#region VRCAvatarBuilderEditor_AddModule
-
-		private static readonly string[] _VRCAvatarBuilderEditor_AddModule = {
-			"モジュールの追加",
-			"Add Module"
-		};
-
-		public static string VRCAvatarBuilderEditor_AddModule => _VRCAvatarBuilderEditor_AddModule[(int)Lang];
+		public static string VRCAvatarBuilderEditor_BasicSetting => _VRCAvatarBuilderEditor_BasicSetting[(int)Lang];
 
 		#endregion
 
@@ -388,7 +388,8 @@
 			"Scene is not set for upload."
 		};
 
-		public static string VRCAvatarBuilderEditor_UploadSceneIsNotSet => _VRCAvatarBuilderEditor_UploadSceneIsNotSet[(int)Lang];
+		public static string VRCAvatarBuilderEditor_UploadSceneIsNotSet =>
+			_VRCAvatarBuilderEditor_UploadSceneIsNotSet[(int)Lang];
 
 		#endregion
 
@@ -399,7 +400,8 @@
 			"Working directory setup"
 		};
 
-		public static string VRCAvatarBuilderEditor_WorkingDirectorySetup => _VRCAvatarBuilderEditor_WorkingDirectorySetup[(int)Lang];
+		public static string VRCAvatarBuilderEditor_WorkingDirectorySetup =>
+			_VRCAvatarBuilderEditor_WorkingDirectorySetup[(int)Lang];
 
 		#endregion
 
@@ -410,8 +412,9 @@
 			"Set up the working directory first."
 		};
 
-		public static string VRCAvatarBuilderEditor_SetUpTheWorkingDirectoryFirst => _VRCAvatarBuilderEditor_SetUpTheWorkingDirectoryFirst[(int)Lang];
-		
+		public static string VRCAvatarBuilderEditor_SetUpTheWorkingDirectoryFirst =>
+			_VRCAvatarBuilderEditor_SetUpTheWorkingDirectoryFirst[(int)Lang];
+
 		#endregion
 
 		#region VRCAvatarBuilderEditor_ModuleIsNotSet
@@ -426,10 +429,10 @@
 		public static string VRCAvatarBuilderEditor_ModuleIsNotSet => _VRCAvatarBuilderEditor_ModuleIsNotSet[(int)Lang];
 
 		#endregion
-		
+
 		#endregion
 
-		
+
 		#region DefaultBaseLayerModuleEditor
 
 		#region DefaultBaseLayerModuleEditor_Info
@@ -574,6 +577,30 @@
 
 		#endregion
 
+		#region GestureLayerModuleEditor_FoundGestureLayerInAvatar
+
+		private static readonly string[] _GestureLayerModuleEditor_FoundGestureLayerInAvatar = {
+			"アバターに設定されているジェスチャーレイヤーが見つかりました。",
+			"A gesture layer is found that is set in the avatar."
+		};
+
+		public static string GestureLayerModuleEditor_FoundGestureLayerInAvatar =>
+			_GestureLayerModuleEditor_FoundGestureLayerInAvatar[(int)Lang];
+
+		#endregion
+
+		#region GestureLayerModuleEditor_SetupFromAnimatorController
+
+		private static readonly string[] _GestureLayerModuleEditor_SetupFromAnimatorController = {
+			"アニメーターコントローラーから設定する",
+			"Setup from the Animator Controller"
+		};
+
+		public static string GestureLayerModuleEditor_SetupFromAnimatorController =>
+			_GestureLayerModuleEditor_SetupFromAnimatorController[(int)Lang];
+
+		#endregion
+
 		#region GestureLayerModuleEditor_NotFoundDefaultController
 
 		private static readonly string[] _GestureLayerModuleEditor_NotFoundDefaultController = {
@@ -597,10 +624,11 @@
 			"Use AnimatorController or AnimatorOverrideController."
 		};
 
-		public static string GestureLayerModuleEditor_NotSupportType => _GestureLayerModuleEditor_NotSupportType[(int)Lang];
+		public static string GestureLayerModuleEditor_NotSupportType =>
+			_GestureLayerModuleEditor_NotSupportType[(int)Lang];
 
 		#endregion
-		
+
 		#endregion
 
 		#region GestureExpressionModuleEditor
@@ -625,6 +653,18 @@
 
 		public static string GestureExpressionModuleEditor_UseUserDefinedIdleAnimation =>
 			_GestureExpressionModuleEditor_UseUserDefinedIdleAnimation[(int)Lang];
+
+		#endregion
+
+		#region GestureExpressionModuleEditor_FoundFXLayerInAvatar
+
+		private static readonly string[] _GestureExpressionModuleEditor_FoundFXLayerInAvatar = {
+			"アバターに設定されているFXレイヤーが見つかりました。",
+			"A FX layer is found that is set in the avatar."
+		};
+
+		public static string GestureExpressionModuleEditor_FoundFXLayerInAvatar =>
+			_GestureExpressionModuleEditor_FoundFXLayerInAvatar[(int)Lang];
 
 		#endregion
 

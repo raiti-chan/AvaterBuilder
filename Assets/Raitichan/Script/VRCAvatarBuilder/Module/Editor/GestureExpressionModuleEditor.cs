@@ -14,6 +14,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 	public class GestureExpressionModuleEditor : UnityEditor.Editor {
 		private GestureExpressionModule _target;
 		private VRCAvatarBuilder _targetBuilder;
+		private VRCAvatarBuilderModuleBase[] _allModules;
 
 		private SerializedProperty _useDifferentAnimationProperty;
 		private SerializedProperty _useUserDefinedAnimationProperty;
@@ -30,6 +31,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			if (this._target == null) return;
 
 			this._targetBuilder = this._target.GetTargetBuilder();
+			this.ModuleListUpdate();
 
 			this._useDifferentAnimationProperty =
 				this.serializedObject.FindProperty(GestureExpressionModule.UseDifferentAnimationPropertyName);
@@ -46,7 +48,18 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.DEFAULT_FX_EXPRESSION_LAYER);
 			this._idleController =
 				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.UTIL_IDLE_LAYER);
+
+			Undo.undoRedoPerformed += this.ModuleListUpdate;
 		}
+
+		private void OnDisable() {
+			Undo.undoRedoPerformed -= this.ModuleListUpdate;
+		}
+
+		private void ModuleListUpdate() {
+			this._allModules = this._target.GetAllModule();
+		}
+
 
 		public override void OnInspectorGUI() {
 			this.serializedObject.Update();
@@ -59,7 +72,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 					EditorGUILayout.ObjectField(this._controller, typeof(AnimatorController), false);
 				}
 			}
-			
+
 			this._target.UtilityHoldout = RaitisEditorUtil.Foldout(this._target.UtilityHoldout, Strings.Utility);
 			if (this._target.UtilityHoldout) {
 				GUILayout.Space(5);
@@ -70,8 +83,11 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 				EditorGUI.indentLevel--;
 			}
 
-			// TODO: 自動生成のIdleアニメーション。
 			GUILayout.Space(5);
+			// デフォルト表情の警告表示
+			this.DrawDefaultExpressionWarning();
+
+			// Idleアニメーションの設定
 			EditorGUILayout.PropertyField(this._useUserDefinedAnimationProperty,
 				new GUIContent(Strings.GestureExpressionModuleEditor_UseUserDefinedIdleAnimation));
 			if (this._target.UseUserDefinedIdleAnimation) {
@@ -79,6 +95,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 					EditorGUILayout.HelpBox(Strings.NotFoundIdleTemplateLayer,
 						MessageType.Error);
 				}
+
 				using (new EditorGUI.IndentLevelScope()) {
 					EditorGUILayout.PropertyField(this._idleAnimationProperty, new GUIContent("Idle"));
 				}
@@ -90,8 +107,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 
 			InitArray(this._leftAnimationProperty);
 			InitArray(this._rightAnimationProperty);
-
-			// TODO: アバターについてくるアニメーターから自動設定する機能を作りたい
 
 			GUILayout.Space(15);
 			if (this._target.UseDifferentAnimation) {
@@ -110,21 +125,46 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 
 			this.serializedObject.ApplyModifiedProperties();
 		}
-		
+
+		// ReSharper disable Unity.PerformanceAnalysis
+		private void DrawDefaultExpressionWarning() {
+			// TODO: 自動生成のIdleアニメーション。
+
+			if (this.FindIdleExpressionModule()) return;
+			if (this._target.UseUserDefinedIdleAnimation) return;
+			if (!RaitisEditorUtil.HelpBoxWithButton("デフォルトの表情用のレイヤーが存在しません。\nモジュールを追加しますか。", MessageType.Warning,
+				    Strings.AddModule)) return;
+
+			GameObject obj = new GameObject("デフォルト表情", typeof(IdleExpressionModule)) {
+				transform = {
+					parent = this._target.transform.parent
+				}
+			};
+			obj.transform.SetSiblingIndex(this._target.transform.GetSiblingIndex());
+			Undo.RegisterCreatedObjectUndo(obj, "AddModule");
+			this._target.ModuleUpdateFlag = true;
+			this.ModuleListUpdate();
+		}
+
+		private bool FindIdleExpressionModule() {
+			return this._allModules.Select(module => module.GetType()).Contains(typeof(IdleExpressionModule));
+		}
+
 		private void DrawAvatarsDefaultGestureLayer() {
 			VRCAvatarDescriptor descriptor = this._targetBuilder.AvatarDescriptor;
 			if (descriptor == null) return;
 			RuntimeAnimatorController gestureLayer = descriptor.GetLayer(VRCAvatarDescriptor.AnimLayerType.FX);
 			if (gestureLayer == null) return;
 
-			if (RaitisEditorUtil.HelpBoxWithButton("アバターに設定されているFXレイヤーが見つかりました。", MessageType.Info,
+			if (RaitisEditorUtil.HelpBoxWithButton(Strings.GestureExpressionModuleEditor_FoundFXLayerInAvatar,
+				    MessageType.Info,
 				    Strings.AutoSetting)) {
 				this.SetupWithRuntimeAnimatorController(gestureLayer);
 			}
 		}
 
 		private void DrawSettingWithController() {
-			EditorGUILayout.LabelField("アニメーターコントローラーから設定する");
+			EditorGUILayout.LabelField(Strings.GestureLayerModuleEditor_SetupFromAnimatorController);
 			GUILayout.BeginHorizontal();
 			this._referenceController =
 				EditorGUILayout.ObjectField(this._referenceController, typeof(RuntimeAnimatorController), true) as
@@ -160,7 +200,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 				}
 			}
 		}
-		
+
 		private void SetupWithRuntimeAnimatorController(RuntimeAnimatorController rController) {
 			switch (rController) {
 				case AnimatorController animatorController:
@@ -171,7 +211,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 					break;
 				default:
 					EditorUtility.DisplayDialog(Strings.Error,
-						"この形式のアニメーターはサポートしていません。AnimatorController か AnimatorOverrideControllerを使用してください。", Strings.OK);
+						Strings.GestureLayerModuleEditor_NotSupportType, Strings.OK);
 					break;
 			}
 		}
@@ -183,13 +223,13 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 				AnimationClip overrideClip = controller[originalClip];
 				elementProperty.objectReferenceValue = overrideClip;
 			}
-			
+
 			foreach (SerializedProperty elementProperty in this._rightAnimationProperty.GetEnumerable()) {
 				AnimationClip originalClip = elementProperty.objectReferenceValue as AnimationClip;
 				AnimationClip overrideClip = controller[originalClip];
 				elementProperty.objectReferenceValue = overrideClip;
 			}
-		} 
+		}
 
 		private void SetupWithAnimatorController(AnimatorController controller) {
 			this._useDifferentAnimationProperty.boolValue = false;
@@ -198,26 +238,28 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 					condition.parameter == BuiltInAvatarParameter.GestureLeft.ToString() ||
 					condition.parameter == BuiltInAvatarParameter.GestureRight.ToString()) != 0);
 
-			Dictionary<GestureTypes, List<AnimationClip>> leftDictionary = new Dictionary<GestureTypes, List<AnimationClip>> {
-				[GestureTypes.Fist] = new List<AnimationClip>(),
-				[GestureTypes.Open] = new List<AnimationClip>(),
-				[GestureTypes.Point] = new List<AnimationClip>(),
-				[GestureTypes.Peace] = new List<AnimationClip>(),
-				[GestureTypes.RockNRoll] = new List<AnimationClip>(),
-				[GestureTypes.Gun] = new List<AnimationClip>(),
-				[GestureTypes.ThumbsUp] = new List<AnimationClip>(),
-				[GestureTypes.Idle] = new List<AnimationClip>(),
-			};
-			Dictionary<GestureTypes, List<AnimationClip>> rightDictionary = new Dictionary<GestureTypes, List<AnimationClip>> {
-				[GestureTypes.Fist] = new List<AnimationClip>(),
-				[GestureTypes.Open] = new List<AnimationClip>(),
-				[GestureTypes.Point] = new List<AnimationClip>(),
-				[GestureTypes.Peace] = new List<AnimationClip>(),
-				[GestureTypes.RockNRoll] = new List<AnimationClip>(),
-				[GestureTypes.Gun] = new List<AnimationClip>(),
-				[GestureTypes.ThumbsUp] = new List<AnimationClip>(),
-				[GestureTypes.Idle] = new List<AnimationClip>(),
-			};
+			Dictionary<GestureTypes, List<AnimationClip>> leftDictionary =
+				new Dictionary<GestureTypes, List<AnimationClip>> {
+					[GestureTypes.Fist] = new List<AnimationClip>(),
+					[GestureTypes.Open] = new List<AnimationClip>(),
+					[GestureTypes.Point] = new List<AnimationClip>(),
+					[GestureTypes.Peace] = new List<AnimationClip>(),
+					[GestureTypes.RockNRoll] = new List<AnimationClip>(),
+					[GestureTypes.Gun] = new List<AnimationClip>(),
+					[GestureTypes.ThumbsUp] = new List<AnimationClip>(),
+					[GestureTypes.Idle] = new List<AnimationClip>(),
+				};
+			Dictionary<GestureTypes, List<AnimationClip>> rightDictionary =
+				new Dictionary<GestureTypes, List<AnimationClip>> {
+					[GestureTypes.Fist] = new List<AnimationClip>(),
+					[GestureTypes.Open] = new List<AnimationClip>(),
+					[GestureTypes.Point] = new List<AnimationClip>(),
+					[GestureTypes.Peace] = new List<AnimationClip>(),
+					[GestureTypes.RockNRoll] = new List<AnimationClip>(),
+					[GestureTypes.Gun] = new List<AnimationClip>(),
+					[GestureTypes.ThumbsUp] = new List<AnimationClip>(),
+					[GestureTypes.Idle] = new List<AnimationClip>(),
+				};
 			foreach (AnimatorTransitionBase transition in targetTransitions) {
 				if (transition.destinationState == null) continue;
 				if (!(transition.destinationState.motion is AnimationClip clip)) continue;
@@ -228,21 +270,23 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 					if (condition.parameter == BuiltInAvatarParameter.GestureLeft.ToString()) {
 						leftDictionary[type].Add(clip);
 					}
+
 					if (condition.parameter == BuiltInAvatarParameter.GestureRight.ToString()) {
 						rightDictionary[type].Add(clip);
 					}
 				}
 			}
+
 			// TODO: 複数見つかった場合の選択ダイアログ
 			// TODO: Idleアニメーションの探索
-			foreach (KeyValuePair<GestureTypes,List<AnimationClip>> keyValuePair in leftDictionary) {
+			foreach (KeyValuePair<GestureTypes, List<AnimationClip>> keyValuePair in leftDictionary) {
 				if (keyValuePair.Key == GestureTypes.Idle) continue;
 				if (keyValuePair.Value.Count <= 0) continue;
 				SerializedProperty element = this._leftAnimationProperty.GetArrayElementAtIndex((int)keyValuePair.Key);
 				element.objectReferenceValue = keyValuePair.Value[0];
 			}
-			
-			foreach (KeyValuePair<GestureTypes,List<AnimationClip>> keyValuePair in rightDictionary) {
+
+			foreach (KeyValuePair<GestureTypes, List<AnimationClip>> keyValuePair in rightDictionary) {
 				if (keyValuePair.Key == GestureTypes.Idle) continue;
 				if (keyValuePair.Value.Count <= 0) continue;
 				SerializedProperty element = this._rightAnimationProperty.GetArrayElementAtIndex((int)keyValuePair.Key);
@@ -252,7 +296,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 					this._useDifferentAnimationProperty.boolValue = true;
 				}
 			}
-			
 		}
 	}
 }

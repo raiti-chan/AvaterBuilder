@@ -38,7 +38,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 
 		public void UpdateModuleList() {
 			this._modules = this._target.gameObject.GetComponentsInChildren<VRCAvatarBuilderModuleBase>();
-			this._moduleEditors = this._modules.Select(module => CreateEditor(module)).ToArray();
+			this._moduleEditors = this._modules.Select(CreateEditor).ToArray();
 		}
 
 
@@ -85,7 +85,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			this.DrawWarning(hasError);
 
 			this._target.BasicSettingFoldout =
-				RaitisEditorUtil.HeaderFoldout(this._target.BasicSettingFoldout, Strings.BasicSetting);
+				RaitisEditorUtil.HeaderFoldout(this._target.BasicSettingFoldout, Strings.VRCAvatarBuilderEditor_BasicSetting);
 			if (this._target.BasicSettingFoldout) {
 				this.DrawBasicSetting();
 			}
@@ -212,8 +212,10 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			EditorGUILayout.PropertyField(this._uploadSceneProperty, new GUIContent(Strings.UploadScene));
 			EditorGUILayout.PropertyField(this._expressionMenuProperty);
 		}
+		// ReSharper disable Unity.PerformanceAnalysis
 		private void DrawModules() {
 			GUILayout.Space(2);
+			bool updateFlag = false;
 			for (int i = 0; i < this._modules.Length; i++) {
 				VRCAvatarBuilderModuleBase module = this._modules[i];
 				EditorGUI.indentLevel--;
@@ -226,11 +228,16 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 				Undo.RecordObject(module.gameObject, "rename");
 				module.name = EditorGUILayout.TextField(module.name);
 				this._moduleEditors[i].OnInspectorGUI();
+				updateFlag = updateFlag || module.ModuleUpdateFlag;
+			}
+
+			if (updateFlag) {
+				this.UpdateModuleList();
 			}
 
 			using (new GUILayout.HorizontalScope()) {
 				GUILayout.FlexibleSpace();
-				if (GUILayout.Button(Strings.VRCAvatarBuilderEditor_AddModule, GUILayout.Width(300),
+				if (GUILayout.Button(Strings.AddModule, GUILayout.Width(300),
 					    GUILayout.Height(30))) {
 					ModuleSearchWindow moduleSearchWindow = CreateInstance<ModuleSearchWindow>();
 					moduleSearchWindow.AvatarBuilder = this._target.gameObject;

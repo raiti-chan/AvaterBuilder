@@ -36,19 +36,19 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 
 		#region UseUserDefinedIdleAnimation Parameter
 
-		[SerializeField] private bool useUserDefinedIdleAnimation;
+		[SerializeField] private bool _useUserDefinedIdleAnimation;
 
 		public bool UseUserDefinedIdleAnimation {
-			get => this.useUserDefinedIdleAnimation;
+			get => this._useUserDefinedIdleAnimation;
 			set {
-				if (this.useUserDefinedIdleAnimation == value) return;
+				if (this._useUserDefinedIdleAnimation == value) return;
 				this.BeginUpdate();
-				this.useUserDefinedIdleAnimation = value;
+				this._useUserDefinedIdleAnimation = value;
 				this.Update();
 			}
 		}
 
-		public static string UseUserDefinedIdleAnimationPropertyName => nameof(useUserDefinedIdleAnimation);
+		public static string UseUserDefinedIdleAnimationPropertyName => nameof(_useUserDefinedIdleAnimation);
 
 		#endregion
 

@@ -27,12 +27,18 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 
 		#endregion
 		
+		public bool ModuleUpdateFlag { get; set; } = false;
+		
 		public virtual void Build(VRCAvatarBuilderContext context) { }
 
 		public VRCAvatarBuilder GetTargetBuilder() {
 			return this.GetComponentInParent<VRCAvatarBuilder>();
 		}
-		
+
+		public VRCAvatarBuilderModuleBase[] GetAllModule() {
+			return this.GetTargetBuilder().gameObject.GetComponentsInChildren<VRCAvatarBuilderModuleBase>();;
+		}
+
 		#region Private Method
 
 		protected void BeginUpdate() {
