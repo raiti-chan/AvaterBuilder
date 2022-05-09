@@ -65,9 +65,13 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 
 		private void OnDisable() {
 			Undo.undoRedoPerformed -= this.UpdateModuleList;
+			foreach (UnityEditor.Editor moduleEditor in this._moduleEditors) {
+				DestroyImmediate(moduleEditor);
+			}
 		}
 
 		public override void OnInspectorGUI() {
+			// 自身がPrefabならインスペクタを表示しないように。
 			if (this._emptyController == null) {
 				EditorGUILayout.HelpBox(Strings.NotFoundEmptyTemplateLayer,
 					MessageType.Error);

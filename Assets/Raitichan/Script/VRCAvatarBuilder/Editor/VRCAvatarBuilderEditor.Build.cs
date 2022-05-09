@@ -19,6 +19,7 @@ using AnimLayerType = VRC.SDK3.Avatars.Components.VRCAvatarDescriptor.AnimLayerT
 
 namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 	public partial class VRCAvatarBuilderEditor {
+		// ReSharper disable Unity.PerformanceAnalysis
 		/// <summary>
 		/// ビルドの実行
 		/// </summary>

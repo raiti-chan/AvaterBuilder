@@ -3,6 +3,9 @@
 namespace Raitichan.Script.VRCAvatarBuilder {
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 	public static class ConstantPath {
+
+		public const string IDLE_EXPRESSION_ANIMATION_FILE_NAME = "IdleExpressionAnimation.anim";
+		
 		public const string OUTPUT_DIRECTORY = "/Out";
 		public const string SCENE_DIRECTORY = "/Scene";
 		public const string GENERATED_SUFFIX = "_Generated";
@@ -45,6 +48,9 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		public const string SDK_HANDS_THUMBS_UP_ANIMATION_FILE_PATH = "Assets/VRCSDK/Examples3/Animation/ProxyAnim/proxy_hands_thumbs_up.anim";
 		public const string SDK_HANDS_IDLE_ANIMATION_FILE_PATH = "Assets/VRCSDK/Examples3/Animation/ProxyAnim/proxy_hands_idle2.anim";
 
+
+		public const string BLEND_SHAPE_PROPERTY_NAME_PREFIX = "blendShape.";
+		
 		public static readonly string[] SDK_HANDS_ANIMATION_FILE_PATHS = {
 			SDK_HANDS_FIST_ANIMATION_FILE_PATH,
 			SDK_HANDS_OPEN_ANIMATION_FILE_PATH,

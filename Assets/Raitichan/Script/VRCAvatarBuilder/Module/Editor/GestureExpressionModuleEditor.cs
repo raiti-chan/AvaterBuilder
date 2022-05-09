@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Raitichan.Script.Util.Enum;
 using Raitichan.Script.Util.Extension;
@@ -88,8 +87,9 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			this.DrawDefaultExpressionWarning();
 
 			// Idleアニメーションの設定
-			EditorGUILayout.PropertyField(this._useUserDefinedAnimationProperty,
-				new GUIContent(Strings.GestureExpressionModuleEditor_UseUserDefinedIdleAnimation));
+			// TODO: 削除予定
+			// EditorGUILayout.PropertyField(this._useUserDefinedAnimationProperty,
+			//	new GUIContent(Strings.GestureExpressionModuleEditor_UseUserDefinedIdleAnimation));
 			if (this._target.UseUserDefinedIdleAnimation) {
 				if (this._idleController == null) {
 					EditorGUILayout.HelpBox(Strings.NotFoundIdleTemplateLayer,
@@ -97,7 +97,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 				}
 
 				using (new EditorGUI.IndentLevelScope()) {
-					EditorGUILayout.PropertyField(this._idleAnimationProperty, new GUIContent("Idle"));
+					// EditorGUILayout.PropertyField(this._idleAnimationProperty, new GUIContent("Idle"));
 				}
 			}
 
@@ -128,12 +128,12 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 
 		// ReSharper disable Unity.PerformanceAnalysis
 		private void DrawDefaultExpressionWarning() {
-			// TODO: 自動生成のIdleアニメーション。
 
 			if (this.FindIdleExpressionModule()) return;
 			if (this._target.UseUserDefinedIdleAnimation) return;
 			if (!RaitisEditorUtil.HelpBoxWithButton("デフォルトの表情用のレイヤーが存在しません。\nモジュールを追加しますか。", MessageType.Warning,
 				    Strings.AddModule)) return;
+			// TODO: このモジュールより上にIdleExpressionレイヤーがある場合の警告
 
 			GameObject obj = new GameObject("デフォルト表情", typeof(IdleExpressionModule)) {
 				transform = {

@@ -21,6 +21,17 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 		private static readonly GUIContent FOLDOUT_MENU_ICON = new GUIContent {
 			image = (Texture2D)EditorGUIUtility.Load("pane options")
 		};
+		
+		private static readonly Color TOGGLE_BUTTON_ACTIVE_COLOR = new Color(0.5f, 1, 0.5f, 1);
+
+		public static bool ToggleButton(string text, bool active, string activeText = null) {
+			GUI.backgroundColor = active ? TOGGLE_BUTTON_ACTIVE_COLOR : Color.white;
+			if (GUILayout.Button(active ? activeText ?? text : text)) {
+				active = !active;
+			}
+			GUI.backgroundColor = Color.white;
+			return active;
+		}
 
 		public static bool HelpBoxWithButton(string message, MessageType type, string buttonText) {
 			EditorGUILayout.HelpBox(message, type);
