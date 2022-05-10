@@ -85,6 +85,119 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module {
 
 		#endregion
 
+		#region SimpleBlinkHoldout Parameter
+
+		[SerializeField] private bool _simpleBlinkHoldout;
+
+		public bool SimpleBlinkHoldout {
+			get => this._simpleBlinkHoldout;
+			set {
+				if (this._simpleBlinkHoldout == value) return;
+				this._simpleBlinkHoldout = value;
+				this.Update();
+			}
+		}
+
+		public static string SimpleBlinkHoldoutPropertyName => nameof(_simpleBlinkHoldout);
+
+
+		#endregion
+		
+		#region UseSimpleBlink Parameter
+
+		[SerializeField] private bool _useSimpleBlink;
+
+		public bool UseSimpleBlink {
+			get => this._useSimpleBlink;
+			set {
+				if (this._useSimpleBlink == value) return;
+				this.BeginUpdate();
+				this._useSimpleBlink = value;
+				this.Update();
+			}
+		}
+
+		public static string UseSimpleBlinkPropertyName => nameof(_useSimpleBlink);
+
+
+		#endregion
+
+		#region SimpleBlinkSkinnedMeshRenderer Parameter
+
+		[SerializeField] private SkinnedMeshRenderer _simpleBlinkSkinnedMeshRenderer;
+
+		public SkinnedMeshRenderer SimpleBlinkSkinnedMeshRenderer {
+			get => this._simpleBlinkSkinnedMeshRenderer;
+			set {
+				if (this._simpleBlinkSkinnedMeshRenderer == value) return;
+				this.BeginUpdate();
+				this._simpleBlinkSkinnedMeshRenderer = value;
+				this.Update();
+			}
+		}
+
+		public static string SimpleBlinkSkinnedMeshRendererPropertyName => nameof(_simpleBlinkSkinnedMeshRenderer);
+
+
+		#endregion
+
+		#region SimpleBlinkBlendShapeIndex Parameter
+
+		[SerializeField] private int[] _simpleBlinkBlendShapeIndex = new int[1];
+
+		public int[] SimpleBlinkBlendShapeIndex {
+			get => this._simpleBlinkBlendShapeIndex;
+			set {
+				if (this._simpleBlinkBlendShapeIndex == value) return;
+				this.BeginUpdate();
+				this._simpleBlinkBlendShapeIndex = value;
+				this.Update();
+			}
+		}
+
+		public static string SimpleBlinkBlendShapeIndexPropertyName => nameof(_simpleBlinkBlendShapeIndex);
+
+
+		#endregion
+
+		#region UseAdditionalAnimation Parameter
+
+		[SerializeField] private bool _useAdditionalAnimation;
+
+		public bool UseAdditionalAnimation {
+			get => this._useAdditionalAnimation;
+			set {
+				if (this._useAdditionalAnimation == value) return;
+				this.BeginUpdate();
+				this._useAdditionalAnimation = value;
+				this.Update();
+			}
+		}
+
+		public static string UseAdditionalAnimationPropertyName => nameof(_useAdditionalAnimation);
+
+
+		#endregion
+
+		#region AdditionalAnimation Parameter
+
+		[SerializeField] private AnimationClip _additionalAnimation;
+
+		public AnimationClip AdditionalAnimation {
+			get => this._additionalAnimation;
+			set {
+				if (this._additionalAnimation == value) return;
+				this.BeginUpdate();
+				this._additionalAnimation = value;
+				this.Update();
+			}
+		}
+
+		public static string AdditionalAnimationPropertyName => nameof(_additionalAnimation);
+
+
+		#endregion
+
 
 		public override void Build(VRCAvatarBuilderContext context) {
 			context.AnimatorControllerLayerGenerators.FxLayerGenerators.Add(

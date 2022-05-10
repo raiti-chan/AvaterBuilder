@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Raitichan.Script.Util.Extension;
 using Raitichan.Script.VRCAvatarBuilder.Editor;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -19,10 +20,16 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 		private Dictionary<SkinnedMeshRenderer, float[]> _defaultBlendShapeWeightDictionary;
 
 		private AnimatorController _controller;
+		private AnimationClip _blinkClip;
 
 		private bool _previewEnable;
 
 		private SerializedProperty _skinnedMeshRendererAdditionalProperty;
+		private SerializedProperty _useSimpleBlinkProperty;
+		private SerializedProperty _simpleBlinkSkinnedMeshRendererProperty;
+		private SerializedProperty _simpleBlinkBlendShapeIndexProperty;
+		private SerializedProperty _useAdditionalAnimationProperty;
+		private SerializedProperty _additionalAnimationProperty;
 
 		private void OnEnable() {
 			this._target = this.target as IdleExpressionModule;
@@ -45,8 +52,21 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			this._skinnedMeshRendererAdditionalProperty =
 				this.serializedObject.FindProperty(SkinnedMeshRendererAdditionalPropertyName);
 
+			this._useSimpleBlinkProperty = this.serializedObject.FindProperty(UseSimpleBlinkPropertyName);
+			this._simpleBlinkSkinnedMeshRendererProperty =
+				this.serializedObject.FindProperty(SimpleBlinkSkinnedMeshRendererPropertyName);
+			this._simpleBlinkBlendShapeIndexProperty =
+				this.serializedObject.FindProperty(SimpleBlinkBlendShapeIndexPropertyName);
+
+			this._useAdditionalAnimationProperty =
+				this.serializedObject.FindProperty(UseAdditionalAnimationPropertyName);
+			this._additionalAnimationProperty =
+				this.serializedObject.FindProperty(AdditionalAnimationPropertyName);
+
 			this._controller =
 				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.UTIL_IDLE_LAYER);
+			this._blinkClip =
+				AssetDatabase.LoadAssetAtPath<AnimationClip>(ConstantPath.BLINK_ANIM_FILE_PATH);
 
 			this._defaultBlendShapeWeightDictionary = new Dictionary<SkinnedMeshRenderer, float[]>();
 			this.SkinnedMeshRendererAdditionalUpdate();
@@ -123,10 +143,64 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 				}
 			}
 
+			GUILayout.Space(5);
+			EditorGUILayout.PropertyField(this._useAdditionalAnimationProperty, new GUIContent("追加アニメーションを使用する"));
+			if (this._target.UseAdditionalAnimation) {
+				EditorGUILayout.PropertyField(this._additionalAnimationProperty, new GUIContent("追加アニメーションファイル"));
+			}
+
+			GUILayout.Space(5);
+			this._target.SimpleBlinkHoldout = 
+				RaitisEditorUtil.FoldoutWithToggle(this._target.SimpleBlinkHoldout, this._useSimpleBlinkProperty, "シンプルなまばたきアニメーションを追加");
+			if (this._target.SimpleBlinkHoldout) {
+				if (this._blinkClip == null) {
+					EditorGUILayout.HelpBox("まばたき用アニメーションファイルが見つかりません。\nアセットを再度インポートしてください。",
+						MessageType.Error);
+				} else {
+					using (new EditorGUI.DisabledScope(true)) {
+						EditorGUILayout.ObjectField(this._controller, typeof(AnimatorController), false);
+					}
+				}
+				using (new EditorGUI.DisabledScope(!this._target.UseSimpleBlink)) {
+					EditorGUILayout.PropertyField(this._simpleBlinkSkinnedMeshRendererProperty,
+						new GUIContent("顔のメッシュ"));
+					GUILayout.BeginVertical(GUI.skin.box);
+					GUILayout.Label("対象シェイプキー");
+					string[] blendShapeNames = this._target.SimpleBlinkSkinnedMeshRenderer == null
+						? Array.Empty<string>()
+						: this._target.SimpleBlinkSkinnedMeshRenderer.sharedMesh.GetAllBlendShapeName();
+
+					string[] popupValues = Enumerable.Empty<string>()
+						.Append("--無し--")
+						.Concat(blendShapeNames)
+						.ToArray();
+					foreach (SerializedProperty element in this._simpleBlinkBlendShapeIndexProperty.GetEnumerable()) {
+						element.intValue =
+							EditorGUILayout.Popup(element.intValue + 1, popupValues) - 1;
+					}
+
+					GUILayout.BeginHorizontal();
+					{
+						int arraySize = this._simpleBlinkBlendShapeIndexProperty.arraySize;
+						if (GUILayout.Button("+")) {
+							this._simpleBlinkBlendShapeIndexProperty.InsertArrayElementAtIndex(arraySize);
+							this._simpleBlinkBlendShapeIndexProperty.GetArrayElementAtIndex(arraySize).intValue = -1;
+						}
+
+						using (new EditorGUI.DisabledScope(arraySize <= 1))
+							if (GUILayout.Button("-")) {
+								this._simpleBlinkBlendShapeIndexProperty.DeleteArrayElementAtIndex(arraySize - 1);
+							}
+					}
+
+					GUILayout.EndHorizontal();
+					GUILayout.EndVertical();
+				}
+			}
+
 			this.DrawShowMode();
 			this.DrawPreviewButton();
 			this.DrawSkinnedMeshRendererHoldouts();
-
 			this.serializedObject.ApplyModifiedProperties();
 			if (this._previewEnable) {
 				this.SetPreviewData();
@@ -134,10 +208,14 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 		}
 
 		private void DrawShowMode() {
+			GUILayout.Space(10);
+			float labelWidth = EditorGUIUtility.labelWidth;
+			EditorGUIUtility.labelWidth = 250;
 			this._target.SkinnedMeshRendererDisplayMode =
 				(DisplayMode)EditorGUILayout.Popup("SkinnedMeshRenderer表示モード",
 					(int)this._target.SkinnedMeshRendererDisplayMode,
 					new[] { "全て", "使用されているオブジェクトのみ", "使用されていないオブジェクトのみ" });
+			EditorGUIUtility.labelWidth = labelWidth;
 		}
 
 
@@ -234,7 +312,9 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 		}
 
 		private void DrawAllShapeProperty(BlendShapeWeightData[] data, SkinnedMeshRenderer renderer) {
-			bool enable = data.Where(dataElement => this.FilteredBlendShapeName(dataElement.Name, dataElement.Index, renderer)).All(dataElement => dataElement.Use);
+			bool enable = data
+				.Where(dataElement => this.FilteredBlendShapeName(dataElement.Name, dataElement.Index, renderer))
+				.All(dataElement => dataElement.Use);
 			Rect currentRect = GUILayoutUtility.GetRect(0, EditorGUIUtility.singleLineHeight);
 			currentRect = EditorGUI.IndentedRect(currentRect);
 			Rect toggleRect = currentRect;

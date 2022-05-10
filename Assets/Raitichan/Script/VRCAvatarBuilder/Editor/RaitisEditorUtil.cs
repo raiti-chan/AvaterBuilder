@@ -83,6 +83,50 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			GUI.Box(rect, "", BUTTON_MID);
 		}
 
+		public static bool FoldoutWithToggle(bool isOpen, SerializedProperty toggleProperty, string title) {
+			GUILayout.Space(2);
+			EditorGUILayout.BeginHorizontal();
+			Rect rect = GUILayoutUtility.GetRect(46, 20, FOLDOUT_STYLE);
+			rect = EditorGUI.IndentedRect(rect);
+			GUI.Box(rect, title, FOLDOUT_STYLE);
+			
+			Rect toggleRect = new Rect {
+				x = rect.x + 4,
+				y = rect.y + 3,
+				width = 16,
+				height = 16
+			};
+			
+			Rect buttonRect = new Rect {
+				x = rect.x + rect.width - 24,
+				y = rect.y + 3,
+				width = 16,
+				height = 16
+			};
+
+			Event e = Event.current;
+			// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+			switch (e.type) {
+				case EventType.Repaint:
+					EditorStyles.foldout.Draw(toggleRect, false, false, isOpen, false);
+					EditorStyles.toggle.Draw(buttonRect, false, false, toggleProperty.boolValue, false);
+					break;
+				case EventType.MouseDown when buttonRect.Contains(e.mousePosition):
+					toggleProperty.boolValue = !toggleProperty.boolValue;
+					e.Use();
+					break;
+				case EventType.MouseDown when rect.Contains(e.mousePosition):
+					isOpen = !isOpen;
+					e.Use();
+					break;
+			}
+
+			GUILayout.EndHorizontal();
+			GUILayout.Space(2);
+			
+			return isOpen;
+		}
+
 		public static bool Foldout(bool isOpen, string title, Action<object, int> func = null, object data = null, params string[] menuContent) {
 			GUILayout.Space(2);
 			EditorGUILayout.BeginHorizontal();
