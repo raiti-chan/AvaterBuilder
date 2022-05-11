@@ -16,13 +16,10 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 		private VRCAvatarBuilderModuleBase[] _allModules;
 
 		private SerializedProperty _useDifferentAnimationProperty;
-		private SerializedProperty _useUserDefinedAnimationProperty;
-		private SerializedProperty _idleAnimationProperty;
 		private SerializedProperty _leftAnimationProperty;
 		private SerializedProperty _rightAnimationProperty;
 
 		private AnimatorController _controller;
-		private AnimatorController _idleController;
 		private RuntimeAnimatorController _referenceController;
 
 		private void OnEnable() {
@@ -34,10 +31,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 
 			this._useDifferentAnimationProperty =
 				this.serializedObject.FindProperty(GestureExpressionModule.UseDifferentAnimationPropertyName);
-			this._useUserDefinedAnimationProperty =
-				this.serializedObject.FindProperty(GestureExpressionModule.UseUserDefinedIdleAnimationPropertyName);
-			this._idleAnimationProperty =
-				this.serializedObject.FindProperty(GestureExpressionModule.IdleAnimationPropertyName);
 			this._leftAnimationProperty =
 				this.serializedObject.FindProperty(GestureExpressionModule.LeftAnimationPropertyName);
 			this._rightAnimationProperty =
@@ -45,8 +38,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 
 			this._controller =
 				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.DEFAULT_FX_EXPRESSION_LAYER);
-			this._idleController =
-				AssetDatabase.LoadAssetAtPath<AnimatorController>(ConstantPath.UTIL_IDLE_LAYER);
 
 			Undo.undoRedoPerformed += this.ModuleListUpdate;
 		}
@@ -86,21 +77,6 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			// デフォルト表情の警告表示
 			this.DrawDefaultExpressionWarning();
 
-			// Idleアニメーションの設定
-			// TODO: 削除予定
-			// EditorGUILayout.PropertyField(this._useUserDefinedAnimationProperty,
-			//	new GUIContent(Strings.GestureExpressionModuleEditor_UseUserDefinedIdleAnimation));
-			if (this._target.UseUserDefinedIdleAnimation) {
-				if (this._idleController == null) {
-					EditorGUILayout.HelpBox(Strings.NotFoundIdleTemplateLayer,
-						MessageType.Error);
-				}
-
-				using (new EditorGUI.IndentLevelScope()) {
-					// EditorGUILayout.PropertyField(this._idleAnimationProperty, new GUIContent("Idle"));
-				}
-			}
-
 			GUILayout.Space(5);
 			EditorGUILayout.PropertyField(this._useDifferentAnimationProperty,
 				new GUIContent(Strings.GestureLayerModuleEditor_UseDifferentAnimationProperty));
@@ -130,12 +106,11 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 		private void DrawDefaultExpressionWarning() {
 
 			if (this.FindIdleExpressionModule()) return;
-			if (this._target.UseUserDefinedIdleAnimation) return;
-			if (!RaitisEditorUtil.HelpBoxWithButton("デフォルトの表情用のレイヤーが存在しません。\nモジュールを追加しますか。", MessageType.Warning,
+			if (!RaitisEditorUtil.HelpBoxWithButton(Strings.GestureExpressionModuleEditor_NotFoundIdleExpressionModule, MessageType.Warning,
 				    Strings.AddModule)) return;
 			// TODO: このモジュールより上にIdleExpressionレイヤーがある場合の警告
 
-			GameObject obj = new GameObject("デフォルト表情", typeof(IdleExpressionModule)) {
+			GameObject obj = new GameObject(Strings.GestureExpressionModuleEditor_IdleExpression, typeof(IdleExpressionModule)) {
 				transform = {
 					parent = this._target.transform.parent
 				}

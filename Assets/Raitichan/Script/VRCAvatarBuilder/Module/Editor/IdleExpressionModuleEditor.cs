@@ -133,7 +133,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 
 		public override void OnInspectorGUI() {
 			this.serializedObject.Update();
-			EditorGUILayout.HelpBox("このデフォルトの表情アニメーションレイヤーを追加します。", MessageType.Info);
+			EditorGUILayout.HelpBox("このデフォルトの表情アニメーションレイヤーを追加します。\n基本的に全ての表情のシェイプキーにチェックを付けることをお勧めします。", MessageType.Info);
 			if (this._controller == null) {
 				EditorGUILayout.HelpBox(Strings.GestureExpressionModuleEditor_NotFoundDefaultController,
 					MessageType.Error);

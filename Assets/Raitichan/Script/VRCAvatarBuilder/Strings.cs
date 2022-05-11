@@ -668,6 +668,30 @@
 
 		#endregion
 
+		#region GestureExpressionModuleEditor_NotFoundIdleExpressionModule
+
+		private static readonly string[] _GestureExpressionModuleEditor_NotFoundIdleExpressionModule = {
+			"デフォルト表情モジュールが存在しません。\n" +
+			"モジュールを追加しますか。",
+			"The default expression module does not exist.\n" +
+			"Would you like to add a module?"
+		};
+
+		public static string GestureExpressionModuleEditor_NotFoundIdleExpressionModule => _GestureExpressionModuleEditor_NotFoundIdleExpressionModule[(int)Lang];
+
+		#endregion
+
+		#region GestureExpressionModuleEditor_IdleExpression
+
+		private static readonly string[] _GestureExpressionModuleEditor_IdleExpression = {
+			"デフォルト表情",
+			"Default Expression"
+		};
+
+		public static string GestureExpressionModuleEditor_IdleExpression => _GestureExpressionModuleEditor_IdleExpression[(int)Lang];
+
+		#endregion
+
 		#region GestureExpressionModuleEditor_NotFoundDefaultController
 
 		private static readonly string[] _GestureExpressionModuleEditor_NotFoundDefaultController = {
