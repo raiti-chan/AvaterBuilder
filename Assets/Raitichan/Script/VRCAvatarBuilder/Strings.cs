@@ -44,6 +44,28 @@
 
 		#endregion
 
+		#region All
+
+		private static readonly string[] _All = {
+			"全て",
+			"All"
+		};
+
+		public static string All => _All[(int)Lang];
+
+		#endregion
+
+		#region None
+
+		private static readonly string[] _None = {
+			"無し",
+			"None"
+		};
+
+		public static string None => _None[(int)Lang];
+
+		#endregion
+
 		#region Warning
 
 		private static readonly string[] _Warning = {
@@ -85,6 +107,17 @@
 		};
 
 		public static string TargetLayer => _TargetLayer[(int)Lang];
+
+		#endregion
+
+		#region TargetShapeKey
+
+		private static readonly string[] _TargetBlendShape = {
+			"対象ブレンドシェイプ",
+			"Target Blend Shape"
+		};
+
+		public static string TargetBlendShape => _TargetBlendShape[(int)Lang];
 
 		#endregion
 
@@ -140,6 +173,39 @@
 		};
 
 		public static string Build => _Build[(int)Lang];
+
+		#endregion
+
+		#region Preview
+
+		private static readonly string[] _Preview = {
+			"プレビュー",
+			"Preview"
+		};
+
+		public static string Preview => _Preview[(int)Lang];
+
+		#endregion
+
+		#region ReleasePreview
+
+		private static readonly string[] _ReleasePreview = {
+			"プレビュー解除",
+			"Release Preview"
+		};
+
+		public static string ReleasePreview => _ReleasePreview[(int)Lang];
+
+		#endregion
+
+		#region AllCheck
+
+		private static readonly string[] _AllCheck = {
+			"全てチェック",
+			"All Check"
+		};
+
+		public static string AllCheck => _AllCheck[(int)Lang];
 
 		#endregion
 
@@ -631,6 +697,132 @@
 
 		#endregion
 
+
+		#region IdleExpressionModuleEditor
+
+		#region IdleExpressionModuleEditor_Info
+
+		private static readonly string[] _IdleExpressionModuleEditor_Info = {
+			"このデフォルトの表情アニメーションレイヤーを追加します。\n" +
+			"基本的に全ての表情のシェイプキーにチェックを付けることをお勧めします。",
+			"Add this default facial expression animation layer.\n" +
+			"It is recommended that you check the shape key for basically all expressions."
+		};
+
+		public static string IdleExpressionModuleEditor_Info => _IdleExpressionModuleEditor_Info[(int)Lang];
+
+		#endregion
+
+		#region IdleExpressionModuleEditor_UseAdditionalAnimation
+
+		private static readonly string[] _IdleExpressionModuleEditor_UseAdditionalAnimation = {
+			"追加アニメーションを使用する",
+			"Use additional animation"
+		};
+
+		public static string IdleExpressionModuleEditor_UseAdditionalAnimation =>
+			_IdleExpressionModuleEditor_UseAdditionalAnimation[(int)Lang];
+
+		#endregion
+
+		#region IdleExpressionModuleEditor_AdditionalAnimationClip
+
+		private static readonly string[] _IdleExpressionModuleEditor_AdditionalAnimationClip = {
+			"追加アニメーションクリップ",
+			"Additional Animation Clips"
+		};
+
+		public static string IdleExpressionModuleEditor_AdditionalAnimationClip =>
+			_IdleExpressionModuleEditor_AdditionalAnimationClip[(int)Lang];
+
+		#endregion
+
+		#region IdleExpressionModuleEditor_UseSimpleBlink
+
+		private static readonly string[] _IdleExpressionModuleEditor_UseSimpleBlink = {
+			"シンプルなまばたきアニメーションを追加",
+			"Added simple blink animation"
+		};
+
+		public static string IdleExpressionModuleEditor_UseSimpleBlink =>
+			_IdleExpressionModuleEditor_UseSimpleBlink[(int)Lang];
+
+		#endregion
+
+		#region IdleExpressionModuleEditor_NotFoundBlinkAnimationClip
+
+		private static readonly string[] _IdleExpressionModuleEditor_NotFoundBlinkAnimationClip = {
+			"まばたき用アニメーションクリップが見つかりません。\n" +
+			"アセットを再度インポートしてください。",
+			"Cannot find animation clip for blinking.\n" +
+			"Import the assets again."
+		};
+
+		public static string IdleExpressionModuleEditor_NotFoundBlinkAnimationClip =>
+			_IdleExpressionModuleEditor_NotFoundBlinkAnimationClip[(int)Lang];
+
+		#endregion
+
+		#region IdleExpressionModuleEditor_FaceMesh
+
+		private static readonly string[] _IdleExpressionModuleEditor_FaceMesh = {
+			"顔のメッシュ",
+			"Face Mesh"
+		};
+
+		public static string IdleExpressionModuleEditor_FaceMesh => _IdleExpressionModuleEditor_FaceMesh[(int)Lang];
+
+		#endregion
+
+		#region IdleExpressionModuleEditor_SkinnedMeshRendererDisplayMode
+
+		private static readonly string[] _IdleExpressionModuleEditor_SkinnedMeshRendererDisplayMode = {
+			"SkinnedMeshRenderer表示モード",
+			"SkinnedMeshRenderer display mode"
+		};
+
+		public static string IdleExpressionModuleEditor_SkinnedMeshRendererDisplayMode => _IdleExpressionModuleEditor_SkinnedMeshRendererDisplayMode[(int)Lang];
+
+		#endregion
+
+		#region IdleExpressionModuleEditor_UsedOnly
+
+		private static readonly string[] _IdleExpressionModuleEditor_UsedOnly = {
+			"使用されているオブジェクトのみ",
+			"Only objects used"
+		};
+
+		public static string IdleExpressionModuleEditor_UsedOnly => _IdleExpressionModuleEditor_UsedOnly[(int)Lang];
+
+		#endregion
+
+		#region IdleExpressionModuleEditor_NonUsedOnly
+
+		private static readonly string[] _IdleExpressionModuleEditor_NonUsedOnly = {
+			"使用されていないオブジェクトのみ",
+			"Only unused objects"
+		};
+
+		public static string IdleExpressionModuleEditor_NonUsedOnly => _IdleExpressionModuleEditor_NonUsedOnly[(int)Lang];
+
+		#endregion
+
+		#region IdleExpressionModuleEditor_DirectBlendShapeChangeWarning
+
+		private static readonly string[] _IdleExpressionModuleEditor_DirectBlendShapeChangeWarning = {
+			"ブレンドシェイプが直接変更されています。\n" +
+			"デフォルト表情として設定し、全て0に置き換えますか?",
+			"The blend shape has been directly modified.\n" +
+			"Set as default expression and replace all with 0?"
+		};
+
+		public static string IdleExpressionModuleEditor_DirectBlendShapeChangeWarning => _IdleExpressionModuleEditor_DirectBlendShapeChangeWarning[(int)Lang];
+
+		#endregion
+
+		#endregion
+
+
 		#region GestureExpressionModuleEditor
 
 		#region GestureExpressionModuleEditor_Info
@@ -677,7 +869,8 @@
 			"Would you like to add a module?"
 		};
 
-		public static string GestureExpressionModuleEditor_NotFoundIdleExpressionModule => _GestureExpressionModuleEditor_NotFoundIdleExpressionModule[(int)Lang];
+		public static string GestureExpressionModuleEditor_NotFoundIdleExpressionModule =>
+			_GestureExpressionModuleEditor_NotFoundIdleExpressionModule[(int)Lang];
 
 		#endregion
 
@@ -688,7 +881,8 @@
 			"Default Expression"
 		};
 
-		public static string GestureExpressionModuleEditor_IdleExpression => _GestureExpressionModuleEditor_IdleExpression[(int)Lang];
+		public static string GestureExpressionModuleEditor_IdleExpression =>
+			_GestureExpressionModuleEditor_IdleExpression[(int)Lang];
 
 		#endregion
 

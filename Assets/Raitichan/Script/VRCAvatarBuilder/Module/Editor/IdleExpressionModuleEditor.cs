@@ -133,7 +133,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 
 		public override void OnInspectorGUI() {
 			this.serializedObject.Update();
-			EditorGUILayout.HelpBox("このデフォルトの表情アニメーションレイヤーを追加します。\n基本的に全ての表情のシェイプキーにチェックを付けることをお勧めします。", MessageType.Info);
+			EditorGUILayout.HelpBox(Strings.IdleExpressionModuleEditor_Info, MessageType.Info);
 			if (this._controller == null) {
 				EditorGUILayout.HelpBox(Strings.GestureExpressionModuleEditor_NotFoundDefaultController,
 					MessageType.Error);
@@ -144,34 +144,38 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			}
 
 			GUILayout.Space(5);
-			EditorGUILayout.PropertyField(this._useAdditionalAnimationProperty, new GUIContent("追加アニメーションを使用する"));
+			EditorGUILayout.PropertyField(this._useAdditionalAnimationProperty,
+				new GUIContent(Strings.IdleExpressionModuleEditor_UseAdditionalAnimation));
 			if (this._target.UseAdditionalAnimation) {
-				EditorGUILayout.PropertyField(this._additionalAnimationProperty, new GUIContent("追加アニメーションファイル"));
+				EditorGUILayout.PropertyField(this._additionalAnimationProperty,
+					new GUIContent(Strings.IdleExpressionModuleEditor_AdditionalAnimationClip));
 			}
 
 			GUILayout.Space(5);
-			this._target.SimpleBlinkHoldout = 
-				RaitisEditorUtil.FoldoutWithToggle(this._target.SimpleBlinkHoldout, this._useSimpleBlinkProperty, "シンプルなまばたきアニメーションを追加");
+			this._target.SimpleBlinkHoldout =
+				RaitisEditorUtil.FoldoutWithToggle(this._target.SimpleBlinkHoldout, this._useSimpleBlinkProperty,
+					Strings.IdleExpressionModuleEditor_UseSimpleBlink);
 			if (this._target.SimpleBlinkHoldout) {
 				if (this._blinkClip == null) {
-					EditorGUILayout.HelpBox("まばたき用アニメーションファイルが見つかりません。\nアセットを再度インポートしてください。",
+					EditorGUILayout.HelpBox(Strings.IdleExpressionModuleEditor_NotFoundBlinkAnimationClip,
 						MessageType.Error);
 				} else {
 					using (new EditorGUI.DisabledScope(true)) {
 						EditorGUILayout.ObjectField(this._controller, typeof(AnimatorController), false);
 					}
 				}
+
 				using (new EditorGUI.DisabledScope(!this._target.UseSimpleBlink)) {
 					EditorGUILayout.PropertyField(this._simpleBlinkSkinnedMeshRendererProperty,
-						new GUIContent("顔のメッシュ"));
+						new GUIContent(Strings.IdleExpressionModuleEditor_FaceMesh));
 					GUILayout.BeginVertical(GUI.skin.box);
-					GUILayout.Label("対象シェイプキー");
+					GUILayout.Label(Strings.TargetBlendShape);
 					string[] blendShapeNames = this._target.SimpleBlinkSkinnedMeshRenderer == null
 						? Array.Empty<string>()
 						: this._target.SimpleBlinkSkinnedMeshRenderer.sharedMesh.GetAllBlendShapeName();
 
 					string[] popupValues = Enumerable.Empty<string>()
-						.Append("--無し--")
+						.Append($"--{Strings.None}--")
 						.Concat(blendShapeNames)
 						.ToArray();
 					foreach (SerializedProperty element in this._simpleBlinkBlendShapeIndexProperty.GetEnumerable()) {
@@ -212,16 +216,16 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			float labelWidth = EditorGUIUtility.labelWidth;
 			EditorGUIUtility.labelWidth = 250;
 			this._target.SkinnedMeshRendererDisplayMode =
-				(DisplayMode)EditorGUILayout.Popup("SkinnedMeshRenderer表示モード",
+				(DisplayMode)EditorGUILayout.Popup(Strings.IdleExpressionModuleEditor_SkinnedMeshRendererDisplayMode,
 					(int)this._target.SkinnedMeshRendererDisplayMode,
-					new[] { "全て", "使用されているオブジェクトのみ", "使用されていないオブジェクトのみ" });
+					new[] { Strings.All, Strings.IdleExpressionModuleEditor_UsedOnly, Strings.IdleExpressionModuleEditor_NonUsedOnly});
 			EditorGUIUtility.labelWidth = labelWidth;
 		}
 
 
 		private void DrawPreviewButton() {
 			bool old = this._previewEnable;
-			this._previewEnable = RaitisEditorUtil.ToggleButton("プレビュー", _previewEnable, "プレビュー解除");
+			this._previewEnable = RaitisEditorUtil.ToggleButton(Strings.Preview, _previewEnable, Strings.ReleasePreview);
 			if (old != this._previewEnable && !this._previewEnable) {
 				this.SetDefaultData();
 			}
@@ -276,7 +280,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			}
 
 			if (!flag) return;
-			if (!RaitisEditorUtil.HelpBoxWithButton("BlendShapeが直接変更されています。\nデフォルト表情として設定し、全て0に置き換えますか?",
+			if (!RaitisEditorUtil.HelpBoxWithButton(Strings.IdleExpressionModuleEditor_DirectBlendShapeChangeWarning,
 				    MessageType.Info,
 				    Strings.AutoSetting)) return;
 			Undo.RecordObject(data.Renderer, "Set Blend Shape");
@@ -325,7 +329,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Module.Editor {
 			Rect labelRect = currentRect;
 			labelRect.x += 22;
 			labelRect.width -= 200;
-			EditorGUI.LabelField(labelRect, "全てチェック");
+			EditorGUI.LabelField(labelRect, Strings.AllCheck);
 
 			if (toggleFlag == enable) return;
 			Undo.RecordObject(this._target, "All Check");
