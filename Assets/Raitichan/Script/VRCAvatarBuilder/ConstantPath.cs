@@ -11,9 +11,14 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		public const string GENERATED_SUFFIX = "_Generated";
 		public const string ASSET_DIR_PATH = "Assets";
 		public const string RESOURCE_DIR_PATH = ASSET_DIR_PATH + "/Raitichan/Script/VRCAvatarBuilder/resource";
+
+		public const string GLOBAL_DB_PATH = RESOURCE_DIR_PATH + "/GlobalDB.asset";
+
+		
 		public const string ANIMATION_DIR_PATH = RESOURCE_DIR_PATH + "/Animation";
 		public const string CONTROLLER_DIR_PATH = ANIMATION_DIR_PATH + "/Controller";
 		public const string CLIP_DIR_PATH = ANIMATION_DIR_PATH + "/Clip";
+		
 		public const string BLINK_ANIM_FILE_PATH = CLIP_DIR_PATH + "/Blink.anim";
 		
 		public const string EMPTY_CONTROLLER_PATH = CONTROLLER_DIR_PATH + "/EmptyAnimationControler.controller";

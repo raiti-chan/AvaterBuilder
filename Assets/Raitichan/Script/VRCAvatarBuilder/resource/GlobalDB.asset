@@ -1,0 +1,398 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9069840338912279221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19376ac2f4d549edbe39793c8fb6d8f0, type: 3}
+  m_Name: ImportedAvatarTable
+  m_EditorClassIdentifier: 
+  _data: []
+--- !u!114 &-7194002752965324003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdcea28c32e54f3889bd9607db09fdaa, type: 3}
+  m_Name: HumanoidBoneSubNameTable
+  m_EditorClassIdentifier: 
+  _data:
+  - Name: Hips
+    OriginalNameID: 0
+  - Name: LeftUpperLeg
+    OriginalNameID: 1
+  - Name: RightUpperLeg
+    OriginalNameID: 2
+  - Name: LeftLowerLeg
+    OriginalNameID: 3
+  - Name: RightLowerLeg
+    OriginalNameID: 4
+  - Name: LeftFoot
+    OriginalNameID: 5
+  - Name: RightFoot
+    OriginalNameID: 6
+  - Name: Spine
+    OriginalNameID: 7
+  - Name: Chest
+    OriginalNameID: 8
+  - Name: Neck
+    OriginalNameID: 9
+  - Name: Head
+    OriginalNameID: 10
+  - Name: LeftShoulder
+    OriginalNameID: 11
+  - Name: RightShoulder
+    OriginalNameID: 12
+  - Name: LeftUpperArm
+    OriginalNameID: 13
+  - Name: RightUpperArm
+    OriginalNameID: 14
+  - Name: LeftLowerArm
+    OriginalNameID: 15
+  - Name: RightLowerArm
+    OriginalNameID: 16
+  - Name: LeftHand
+    OriginalNameID: 17
+  - Name: RightHand
+    OriginalNameID: 18
+  - Name: LeftToes
+    OriginalNameID: 19
+  - Name: RightToes
+    OriginalNameID: 20
+  - Name: LeftEye
+    OriginalNameID: 21
+  - Name: RightEye
+    OriginalNameID: 22
+  - Name: Jaw
+    OriginalNameID: 23
+  - Name: LeftThumbProximal
+    OriginalNameID: 24
+  - Name: LeftThumbIntermediate
+    OriginalNameID: 25
+  - Name: LeftThumbDistal
+    OriginalNameID: 26
+  - Name: LeftIndexProximal
+    OriginalNameID: 27
+  - Name: LeftIndexIntermediate
+    OriginalNameID: 28
+  - Name: LeftIndexDistal
+    OriginalNameID: 29
+  - Name: LeftMiddleProximal
+    OriginalNameID: 30
+  - Name: LeftMiddleIntermediate
+    OriginalNameID: 31
+  - Name: LeftMiddleDistal
+    OriginalNameID: 32
+  - Name: LeftRingProximal
+    OriginalNameID: 33
+  - Name: LeftRingIntermediate
+    OriginalNameID: 34
+  - Name: LeftRingDistal
+    OriginalNameID: 35
+  - Name: LeftLittleProximal
+    OriginalNameID: 36
+  - Name: LeftLittleIntermediate
+    OriginalNameID: 37
+  - Name: LeftLittleDistal
+    OriginalNameID: 38
+  - Name: RightThumbProximal
+    OriginalNameID: 39
+  - Name: RightThumbIntermediate
+    OriginalNameID: 40
+  - Name: RightThumbDistal
+    OriginalNameID: 41
+  - Name: RightIndexProximal
+    OriginalNameID: 42
+  - Name: RightIndexIntermediate
+    OriginalNameID: 43
+  - Name: RightIndexDistal
+    OriginalNameID: 44
+  - Name: RightMiddleProximal
+    OriginalNameID: 45
+  - Name: RightMiddleIntermediate
+    OriginalNameID: 46
+  - Name: RightMiddleDistal
+    OriginalNameID: 47
+  - Name: RightRingProximal
+    OriginalNameID: 48
+  - Name: RightRingIntermediate
+    OriginalNameID: 49
+  - Name: RightRingDistal
+    OriginalNameID: 50
+  - Name: RightLittleProximal
+    OriginalNameID: 51
+  - Name: RightLittleIntermediate
+    OriginalNameID: 52
+  - Name: RightLittleDistal
+    OriginalNameID: 53
+  - Name: UpperChest
+    OriginalNameID: 54
+  - Name: LastBone
+    OriginalNameID: 55
+  - Name: Armature
+    OriginalNameID: 56
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20e82d4fb5f94024a73e2b8cc0e8d4a4, type: 3}
+  m_Name: GlobalDB
+  m_EditorClassIdentifier: 
+  ImportedAvatarTable: {fileID: -9069840338912279221}
+  humanoidBoneTable: {fileID: 2207984018002840379}
+  HumanoidBoneSubNameTable: {fileID: -7194002752965324003}
+--- !u!114 &2207984018002840379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ad22b5604bf4311a393d6a02c4a253a, type: 3}
+  m_Name: HumanoidBoneTable
+  m_EditorClassIdentifier: 
+  _data:
+  - Name: Hips
+    Id: 0
+    ParentHumanoidBoneIndex: 56
+    IsOptionalBone: 0
+  - Name: LeftUpperLeg
+    Id: 1
+    ParentHumanoidBoneIndex: 0
+    IsOptionalBone: 0
+  - Name: RightUpperLeg
+    Id: 2
+    ParentHumanoidBoneIndex: 0
+    IsOptionalBone: 0
+  - Name: LeftLowerLeg
+    Id: 3
+    ParentHumanoidBoneIndex: 1
+    IsOptionalBone: 0
+  - Name: RightLowerLeg
+    Id: 4
+    ParentHumanoidBoneIndex: 2
+    IsOptionalBone: 0
+  - Name: LeftFoot
+    Id: 5
+    ParentHumanoidBoneIndex: 3
+    IsOptionalBone: 0
+  - Name: RightFoot
+    Id: 6
+    ParentHumanoidBoneIndex: 4
+    IsOptionalBone: 0
+  - Name: Spine
+    Id: 7
+    ParentHumanoidBoneIndex: 0
+    IsOptionalBone: 0
+  - Name: Chest
+    Id: 8
+    ParentHumanoidBoneIndex: 7
+    IsOptionalBone: 1
+  - Name: Neck
+    Id: 9
+    ParentHumanoidBoneIndex: 54
+    IsOptionalBone: 1
+  - Name: Head
+    Id: 10
+    ParentHumanoidBoneIndex: 9
+    IsOptionalBone: 0
+  - Name: LeftShoulder
+    Id: 11
+    ParentHumanoidBoneIndex: 54
+    IsOptionalBone: 1
+  - Name: RightShoulder
+    Id: 12
+    ParentHumanoidBoneIndex: 54
+    IsOptionalBone: 1
+  - Name: LeftUpperArm
+    Id: 13
+    ParentHumanoidBoneIndex: 11
+    IsOptionalBone: 0
+  - Name: RightUpperArm
+    Id: 14
+    ParentHumanoidBoneIndex: 12
+    IsOptionalBone: 0
+  - Name: LeftLowerArm
+    Id: 15
+    ParentHumanoidBoneIndex: 13
+    IsOptionalBone: 0
+  - Name: RightLowerArm
+    Id: 16
+    ParentHumanoidBoneIndex: 14
+    IsOptionalBone: 0
+  - Name: LeftHand
+    Id: 17
+    ParentHumanoidBoneIndex: 15
+    IsOptionalBone: 0
+  - Name: RightHand
+    Id: 18
+    ParentHumanoidBoneIndex: 16
+    IsOptionalBone: 0
+  - Name: LeftToes
+    Id: 19
+    ParentHumanoidBoneIndex: 5
+    IsOptionalBone: 1
+  - Name: RightToes
+    Id: 20
+    ParentHumanoidBoneIndex: 6
+    IsOptionalBone: 1
+  - Name: LeftEye
+    Id: 21
+    ParentHumanoidBoneIndex: 10
+    IsOptionalBone: 1
+  - Name: RightEye
+    Id: 22
+    ParentHumanoidBoneIndex: 10
+    IsOptionalBone: 1
+  - Name: Jaw
+    Id: 23
+    ParentHumanoidBoneIndex: 10
+    IsOptionalBone: 1
+  - Name: LeftThumbProximal
+    Id: 24
+    ParentHumanoidBoneIndex: 17
+    IsOptionalBone: 1
+  - Name: LeftThumbIntermediate
+    Id: 25
+    ParentHumanoidBoneIndex: 24
+    IsOptionalBone: 1
+  - Name: LeftThumbDistal
+    Id: 26
+    ParentHumanoidBoneIndex: 25
+    IsOptionalBone: 1
+  - Name: LeftIndexProximal
+    Id: 27
+    ParentHumanoidBoneIndex: 17
+    IsOptionalBone: 1
+  - Name: LeftIndexIntermediate
+    Id: 28
+    ParentHumanoidBoneIndex: 27
+    IsOptionalBone: 1
+  - Name: LeftIndexDistal
+    Id: 29
+    ParentHumanoidBoneIndex: 28
+    IsOptionalBone: 1
+  - Name: LeftMiddleProximal
+    Id: 30
+    ParentHumanoidBoneIndex: 17
+    IsOptionalBone: 1
+  - Name: LeftMiddleIntermediate
+    Id: 31
+    ParentHumanoidBoneIndex: 30
+    IsOptionalBone: 1
+  - Name: LeftMiddleDistal
+    Id: 32
+    ParentHumanoidBoneIndex: 31
+    IsOptionalBone: 1
+  - Name: LeftRingProximal
+    Id: 33
+    ParentHumanoidBoneIndex: 17
+    IsOptionalBone: 1
+  - Name: LeftRingIntermediate
+    Id: 34
+    ParentHumanoidBoneIndex: 33
+    IsOptionalBone: 1
+  - Name: LeftRingDistal
+    Id: 35
+    ParentHumanoidBoneIndex: 34
+    IsOptionalBone: 1
+  - Name: LeftLittleProximal
+    Id: 36
+    ParentHumanoidBoneIndex: 17
+    IsOptionalBone: 1
+  - Name: LeftLittleIntermediate
+    Id: 37
+    ParentHumanoidBoneIndex: 36
+    IsOptionalBone: 1
+  - Name: LeftLittleDistal
+    Id: 38
+    ParentHumanoidBoneIndex: 37
+    IsOptionalBone: 1
+  - Name: RightThumbProximal
+    Id: 39
+    ParentHumanoidBoneIndex: 18
+    IsOptionalBone: 1
+  - Name: RightThumbIntermediate
+    Id: 40
+    ParentHumanoidBoneIndex: 39
+    IsOptionalBone: 1
+  - Name: RightThumbDistal
+    Id: 41
+    ParentHumanoidBoneIndex: 40
+    IsOptionalBone: 1
+  - Name: RightIndexProximal
+    Id: 42
+    ParentHumanoidBoneIndex: 18
+    IsOptionalBone: 1
+  - Name: RightIndexIntermediate
+    Id: 43
+    ParentHumanoidBoneIndex: 42
+    IsOptionalBone: 1
+  - Name: RightIndexDistal
+    Id: 44
+    ParentHumanoidBoneIndex: 43
+    IsOptionalBone: 1
+  - Name: RightMiddleProximal
+    Id: 45
+    ParentHumanoidBoneIndex: 18
+    IsOptionalBone: 1
+  - Name: RightMiddleIntermediate
+    Id: 46
+    ParentHumanoidBoneIndex: 45
+    IsOptionalBone: 1
+  - Name: RightMiddleDistal
+    Id: 47
+    ParentHumanoidBoneIndex: 46
+    IsOptionalBone: 1
+  - Name: RightRingProximal
+    Id: 48
+    ParentHumanoidBoneIndex: 18
+    IsOptionalBone: 1
+  - Name: RightRingIntermediate
+    Id: 49
+    ParentHumanoidBoneIndex: 48
+    IsOptionalBone: 1
+  - Name: RightRingDistal
+    Id: 50
+    ParentHumanoidBoneIndex: 49
+    IsOptionalBone: 1
+  - Name: RightLittleProximal
+    Id: 51
+    ParentHumanoidBoneIndex: 18
+    IsOptionalBone: 1
+  - Name: RightLittleIntermediate
+    Id: 52
+    ParentHumanoidBoneIndex: 51
+    IsOptionalBone: 1
+  - Name: RightLittleDistal
+    Id: 53
+    ParentHumanoidBoneIndex: 52
+    IsOptionalBone: 1
+  - Name: UpperChest
+    Id: 54
+    ParentHumanoidBoneIndex: 8
+    IsOptionalBone: 1
+  - Name: LastBone
+    Id: 55
+    ParentHumanoidBoneIndex: -1
+    IsOptionalBone: 0
+  - Name: Armature
+    Id: 56
+    ParentHumanoidBoneIndex: -1
+    IsOptionalBone: 0

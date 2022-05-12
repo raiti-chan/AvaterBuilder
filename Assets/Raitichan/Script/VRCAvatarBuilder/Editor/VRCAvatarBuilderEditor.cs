@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using Raitichan.Script.Util;
+using Raitichan.Script.VRCAvatarBuilder.DataBase;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -89,7 +90,8 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			this.DrawWarning(hasError);
 
 			this._target.BasicSettingFoldout =
-				RaitisEditorUtil.HeaderFoldout(this._target.BasicSettingFoldout, Strings.VRCAvatarBuilderEditor_BasicSetting);
+				RaitisEditorUtil.HeaderFoldout(this._target.BasicSettingFoldout,
+					Strings.VRCAvatarBuilderEditor_BasicSetting);
 			if (this._target.BasicSettingFoldout) {
 				this.DrawBasicSetting();
 			}
@@ -111,6 +113,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			this.serializedObject.ApplyModifiedProperties();
 		}
 
+		// ReSharper disable Unity.PerformanceAnalysis
 		[SuppressMessage("ReSharper", "InvertIf")]
 		private bool DrawInitError() {
 			bool hasError = false;
@@ -167,6 +170,19 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 				}
 			}
 
+			if (this._target.AvatarDescriptor != null) {
+				// TODO: avatar情報をエディタ上で保持したい。
+				Avatar avatar = this._target.AvatarDescriptor.gameObject.GetComponent<Animator>().avatar;
+				GlobalDataBase db = GlobalDataBase.Instance;
+				if (avatar != null && !db.ImportedAvatarTable.Contains(avatar)) {
+					if (RaitisEditorUtil.HelpBoxWithButton("アバターの情報がデータベースに登録されていません。", MessageType.Error,
+						    Strings.AutoSetting)) {
+						db.ImportAvatar(avatar);
+					}
+				}
+			}
+
+
 			return hasError;
 		}
 
@@ -216,6 +232,7 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			EditorGUILayout.PropertyField(this._uploadSceneProperty, new GUIContent(Strings.UploadScene));
 			EditorGUILayout.PropertyField(this._expressionMenuProperty);
 		}
+
 		// ReSharper disable Unity.PerformanceAnalysis
 		private void DrawModules() {
 			GUILayout.Space(2);
