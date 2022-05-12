@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19376ac2f4d549edbe39793c8fb6d8f0, type: 3}
   m_Name: ImportedAvatarTable
   m_EditorClassIdentifier: 
-  _data: []
+  _data:
+  - {fileID: 9000000, guid: e363be9cdc12e264ca0ac3f4bb38891a, type: 3}
 --- !u!114 &-7194002752965324003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +141,70 @@ MonoBehaviour:
     OriginalNameID: 55
   - Name: Armature
     OriginalNameID: 56
+  - Name: LeftToeBase
+    OriginalNameID: 19
+  - Name: RightToeBase
+    OriginalNameID: 20
+  - Name: LeftThumbProximal
+    OriginalNameID: 23
+  - Name: LeftThumbIntermediate
+    OriginalNameID: 24
+  - Name: LeftThumbDistal
+    OriginalNameID: 25
+  - Name: LeftIndexProximal
+    OriginalNameID: 26
+  - Name: LeftIndexIntermediate
+    OriginalNameID: 27
+  - Name: LeftIndexDistal
+    OriginalNameID: 28
+  - Name: LeftMiddleProximal
+    OriginalNameID: 29
+  - Name: LeftMiddleIntermediate
+    OriginalNameID: 30
+  - Name: LeftMiddleDistal
+    OriginalNameID: 31
+  - Name: LeftRingProximal
+    OriginalNameID: 32
+  - Name: LeftRingIntermediate
+    OriginalNameID: 33
+  - Name: LeftRingDistal
+    OriginalNameID: 34
+  - Name: LeftLittleProximal
+    OriginalNameID: 35
+  - Name: LeftLittleIntermediate
+    OriginalNameID: 36
+  - Name: LeftLittleDistal
+    OriginalNameID: 37
+  - Name: RightThumbProximal
+    OriginalNameID: 38
+  - Name: RightThumbIntermediate
+    OriginalNameID: 39
+  - Name: RightThumbDistal
+    OriginalNameID: 40
+  - Name: RightIndexProximal
+    OriginalNameID: 41
+  - Name: RightIndexIntermediate
+    OriginalNameID: 42
+  - Name: RightIndexDistal
+    OriginalNameID: 43
+  - Name: RightMiddleProximal
+    OriginalNameID: 44
+  - Name: RightMiddleIntermediate
+    OriginalNameID: 45
+  - Name: RightMiddleDistal
+    OriginalNameID: 46
+  - Name: RightRingProximal
+    OriginalNameID: 47
+  - Name: RightRingIntermediate
+    OriginalNameID: 48
+  - Name: RightRingDistal
+    OriginalNameID: 49
+  - Name: RightLittleProximal
+    OriginalNameID: 50
+  - Name: RightLittleIntermediate
+    OriginalNameID: 51
+  - Name: RightLittleDistal
+    OriginalNameID: 52
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

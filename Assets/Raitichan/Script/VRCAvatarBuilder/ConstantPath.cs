@@ -10,7 +10,9 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		public const string SCENE_DIRECTORY = "/Scene";
 		public const string GENERATED_SUFFIX = "_Generated";
 		public const string ASSET_DIR_PATH = "Assets";
-		public const string RESOURCE_DIR_PATH = ASSET_DIR_PATH + "/Raitichan/Script/VRCAvatarBuilder/resource";
+		public const string VRC_AVATAR_BUILDER_DIR_PATH = ASSET_DIR_PATH + "/Raitichan/Script/VRCAvatarBuilder";
+		public const string RESOURCE_DIR_PATH = VRC_AVATAR_BUILDER_DIR_PATH + "/resource";
+		public const string DIALOG_UXML_DIR_PATH = VRC_AVATAR_BUILDER_DIR_PATH + "/Editor/Dialog/UXML";
 
 		public const string GLOBAL_DB_PATH = RESOURCE_DIR_PATH + "/GlobalDB.asset";
 
