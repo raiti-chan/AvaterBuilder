@@ -7,6 +7,7 @@ using Raitichan.Script.VRCAvatarBuilder.Editor.Dialog;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VRC.Dynamics;
 using VRC.SDK3.Avatars;
 using static Raitichan.Script.VRCAvatarBuilder.DataBase.HumanoidBoneSubNameTable;
 
@@ -45,20 +46,30 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 			visualElement.Add(defaultInspector);
 
 			visualElement.Add(new Button(this.OnClickAnalyze) { text = "解析" });
-			visualElement.Add(new Button(() => {
-				GameObject[] obj = new[] {
-					this._target.gameObject
-				};
-				// TODO: なぜかアニメーターが無いとエラー
-				AvatarDynamicsSetup.ConvertDynamicBonesToPhysBones(obj);
-			}){text = "DynamicBoneをPhysBoneに変換"});
+			visualElement.Add(new Button(this.ConvertDynamicBonesToPhysBones) { text = "DynamicBoneをPhysBoneに変換" });
+			visualElement.Add(new Button(this.ExtractPB) { text = "PhysBoneをArmature以下から抽出" });
 
 			return visualElement;
+		}
+
+		private void ConvertDynamicBonesToPhysBones() {
+			GameObject[] obj = {
+				this._target.gameObject
+			};
+			Animator animator = this._target.gameObject.GetComponent<Animator>();
+			if (animator == null) {
+				animator = this._target.gameObject.AddComponent<Animator>();
+			}
+
+			AvatarDynamicsSetup.ConvertDynamicBonesToPhysBones(obj);
+			DestroyImmediate(animator);
 		}
 
 		private void OnClickAnalyze() {
 			this._target.SkinnedMeshes = this._target.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
 			this._target.HumanoidBones[ClothesAsset.ARMATURE_BONE_INDEX] = this.FindArmature();
+			this._target.PhysBones = this._target.gameObject.GetComponentsInChildren<VRCPhysBoneBase>();
+			this._target.PhysBoneColliders = this._target.gameObject.GetComponentsInChildren<VRCPhysBoneColliderBase>();
 			this.PrefixAndSuffixSetting();
 			EditorUtility.SetDirty(this._target);
 		}
@@ -89,8 +100,72 @@ namespace Raitichan.Script.VRCAvatarBuilder.Editor {
 				this._target.Prefix = match.Groups["Prefix"].Value;
 				this._target.Suffix = match.Groups["Suffix"].Value;
 			}
+		}
 
-			
+		private void ExtractPB() {
+			GameObject pbRoot = new GameObject("PhysBones") {
+				transform = {
+					parent = this._target.transform
+				}
+			};
+
+			Undo.RecordObject(this._target, "ExtractPB");
+			Undo.RegisterCreatedObjectUndo(pbRoot, "ExtractPB");
+			for (int index = 0; index < this._target.PhysBones.Length; index++) {
+				VRCPhysBoneBase srcPhysBone = this._target.PhysBones[index];
+
+				VRCPhysBoneBase newPhysBone = Instantiate(srcPhysBone, pbRoot.transform, true);
+				newPhysBone.rootTransform = srcPhysBone.rootTransform == null
+					? srcPhysBone.transform
+					: srcPhysBone.rootTransform;
+				newPhysBone.name =
+					GameObjectUtility.GetUniqueNameForSibling(pbRoot.transform, newPhysBone.rootTransform.name + ".PB");
+
+				foreach (VRCPhysBoneBase subComponent in newPhysBone.GetComponents<VRCPhysBoneBase>()) {
+					// 一緒に複製された同一GameObject内のコンポーネントを削除
+					if (subComponent.rootTransform == newPhysBone.rootTransform) continue;
+					DestroyImmediate(subComponent);
+				}
+
+				this._target.PhysBones[index] = newPhysBone;
+				Undo.DestroyObjectImmediate(srcPhysBone);
+			}
+
+
+			GameObject pbcRoot = new GameObject("PhysBoneColliders") {
+				transform = {
+					parent = this._target.transform
+				}
+			};
+			Undo.RegisterCreatedObjectUndo(pbcRoot, "ExtractPB");
+			for (int index = 0; index < this._target.PhysBoneColliders.Length; index++) {
+				VRCPhysBoneColliderBase srcCollider = this._target.PhysBoneColliders[index];
+
+				VRCPhysBoneColliderBase newCollider = Instantiate(srcCollider, pbcRoot.transform, true);
+				newCollider.rootTransform = srcCollider.rootTransform == null
+					? srcCollider.transform
+					: srcCollider.rootTransform;
+				newCollider.name =
+					GameObjectUtility.GetUniqueNameForSibling(pbcRoot.transform,
+						newCollider.rootTransform.name + ".PBC");
+				
+				foreach (Transform transform in newCollider.transform.Cast<Transform>()) {
+					// 一緒に複製された子を削除
+					DestroyImmediate(transform.gameObject);
+				}
+
+				foreach (VRCPhysBoneBase physBone in this._target.PhysBones) {
+					// PhysBoneColliderの参照を新しいコライダーへ差し替え
+					for (int i = 0; i < physBone.colliders.Count; i++) {
+						if (physBone.colliders[i] != srcCollider) continue;
+						Undo.RecordObject(physBone, "Replace PhysBoneCollider");
+						physBone.colliders[i] = newCollider;
+					}
+				}
+
+				this._target.PhysBoneColliders[index] = newCollider;
+				Undo.DestroyObjectImmediate(srcCollider);
+			}
 		}
 
 		#region Gizmo

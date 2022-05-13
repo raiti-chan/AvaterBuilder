@@ -1,8 +1,8 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using VRC.Dynamics;
 #endif
 
 namespace Raitichan.Script.VRCAvatarBuilder {
@@ -83,6 +83,44 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		}
 
 		public static string SuffixPropertyName => nameof(_suffix);
+
+
+		#endregion
+
+		#region PhysBones Parameter
+
+		[SerializeField] private VRCPhysBoneBase[] _physBones;
+
+		public VRCPhysBoneBase[] PhysBones {
+			get => this._physBones;
+			set {
+				if (this._physBones == value) return;
+				this.BeginUpdate();
+				this._physBones = value;
+				this.Update();
+			}
+		}
+
+		public static string PhysBonesPropertyName => nameof(_physBones);
+
+
+		#endregion
+
+		#region PhysBoneColliders Parameter
+
+		[SerializeField] private VRCPhysBoneColliderBase[] _physBoneColliders;
+
+		public VRCPhysBoneColliderBase[]PhysBoneColliders {
+			get => this._physBoneColliders;
+			set {
+				if (this._physBoneColliders == value) return;
+				this.BeginUpdate();
+				this._physBoneColliders = value;
+				this.Update();
+			}
+		}
+
+		public static string PhysBoneCollidersPropertyName => nameof(_physBoneColliders);
 
 
 		#endregion

@@ -12,7 +12,7 @@ namespace Raitichan.Script.VRCAvatarBuilder {
 		public const string ASSET_DIR_PATH = "Assets";
 		public const string VRC_AVATAR_BUILDER_DIR_PATH = ASSET_DIR_PATH + "/Raitichan/Script/VRCAvatarBuilder";
 		public const string RESOURCE_DIR_PATH = VRC_AVATAR_BUILDER_DIR_PATH + "/resource";
-		public const string DIALOG_UXML_DIR_PATH = VRC_AVATAR_BUILDER_DIR_PATH + "/Editor/Dialog/UXML";
+		public const string UXML_DIR_PATH = RESOURCE_DIR_PATH + "/UXML";
 
 		public const string GLOBAL_DB_PATH = RESOURCE_DIR_PATH + "/GlobalDB.asset";
 
